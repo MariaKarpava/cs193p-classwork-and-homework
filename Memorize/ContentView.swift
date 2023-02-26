@@ -9,13 +9,37 @@ import SwiftUI
 
 
 struct ContentView: View {
-    var emojis = ["🐶", "🐭", "🦊", "🐻", "🐼", "🐸", "🐵", "🐥", "🦄", "🐰", "🐷"]
-    var emojiCount = 6
+    @ State var emojis = ["🐶", "🐭", "🦊", "🐻", "🐼", "🐸", "🐵", "🐥", "🦄", "🐰", "🐷"]
     
+    @ State var animalsEmojis = ["🐶", "🐭", "🦊", "🐻", "🐼", "🐸", "🐵", "🐥", "🦄", "🐰", "🐷"]
+    
+    @ State var vehicleEmojis = ["✈️", "🚁", "🚘", "🚃", "🚇", "🚛", "🛳️", "🚲", "🛴", "🚜", "🚒", "🛺", "🚂", "🚗", "🚕", "🚙", "🚌", "🚎", "🏎️", "🚓", "🚑", "🚐", "🛻", "🚚"]
+    
+    var houseEmojis = ["🛁", "🛏️", "🔑", "🪑", "🧸", "🖼️", "🪞", "🚽", "🛋️"]
+    
+    @State var emojiCount = 6
+    
+    @State var animalsCount = 11
+    @State var vehicleCount = 24
+    @State var houseCount = 9
+    
+    private func widthThatBestFits(cardCount: Int) -> CGFloat {
+        if cardCount == 4 {
+            return 175
+        } else if cardCount >= 5 && cardCount < 9 {
+            return 110
+        } else if cardCount >= 10 && cardCount < 17 {
+            return 70
+        }
+        return 65
+    }
+
     var body: some View {
         VStack {
+            Text("Memorize!").font(.largeTitle)
+            
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: widthThatBestFits(cardCount: emojiCount), maximum: 180))]) {
                     
                     ForEach(emojis[0..<emojiCount], id: \.self, content: { emoji in
                         CardView(content: emoji).aspectRatio(2/3, contentMode: .fit)
@@ -24,37 +48,64 @@ struct ContentView: View {
                 }
             }
             .foregroundColor(.red)
-            Spacer()
+             Spacer()
             HStack {
-                remove
                 Spacer()
-                add
+                animalsButton
+                Spacer()
+                houseButton
+                Spacer()
+                vehiclesButton
+                Spacer()
             }
             .font(.largeTitle)
-            .padding(.horizontal)
+            //.padding(.horizontal)
         }
         .padding(.horizontal)
     }
     
     
     // Buttons:
-    var remove: some View {
+    var animalsButton: some View {
         Button {
-            if emojiCount > 1 {
-                emojiCount -= 1
-            }
+            let random = Int.random(in: 4...animalsCount)
+            emojiCount = random
+            emojis = animalsEmojis.shuffled()
         } label: {
-            Image(systemName: "minus.circle")
+            VStack {
+                Image(systemName: "pawprint")
+                Text("Animals")
+                    .font(.system(size: 18.0))
+            }
         }
     }
 
-    var add: some View {
+    var vehiclesButton: some View {
         Button {
-            if emojiCount < emojis.count {
-                emojiCount += 1
-            }
+            let random = Int.random(in: 4...vehicleCount)
+            emojiCount = random
+            emojis = vehicleEmojis.shuffled()
+            
         } label: {
-            Image(systemName: "plus.circle")
+            VStack {
+                Image(systemName: "car")
+                Text("Vehicles")
+                    .font(.system(size: 18))
+            }
+        }
+    }
+    
+    var houseButton: some View {
+        Button {
+            let random = Int.random(in: 4...houseCount)
+            emojiCount = random
+            emojis = houseEmojis.shuffled()
+        } label: {
+            VStack {
+                Image(systemName: "house")
+                Text("House")
+                    .font(.system(size: 18))
+            }
         }
     }
 }
@@ -94,7 +145,4 @@ struct ContentView_Previews: PreviewProvider {
             .preferredColorScheme(.light)
     }
 }
-
-}
-
 
