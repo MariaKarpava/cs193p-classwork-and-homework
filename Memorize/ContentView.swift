@@ -12,20 +12,41 @@ struct ContentView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 66))]) {
-                ForEach(viewModel.cards) { card in
-                    CardView(card: card)
-                        .aspectRatio(2/3, contentMode: .fit)
-                        .onTapGesture {
-                            viewModel.choose(card)
-                        }
-                    
+        VStack {
+            Text(viewModel.themeName)
+                .foregroundColor(.red)
+                .font(.largeTitle)
+                .padding()
+            
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 66))]) {
+                    ForEach(viewModel.cards) { card in
+                        CardView(card: card)
+                            .aspectRatio(2/3, contentMode: .fit)
+                            .onTapGesture {
+                                viewModel.choose(card)
+                            }
+                    }
                 }
             }
+            .foregroundColor(.red)
+            .padding(.horizontal)
+            .padding(.bottom)
+            
+            Spacer()
+            
+            Button {
+                viewModel.newGame()
+            } label: {
+                Text("New Game")
+                    .foregroundColor(.red)
+            }
+            .font(.title2)
+            .padding()
+            .background(
+              RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.red, lineWidth: 4))
         }
-        .foregroundColor(.red)
-        .padding(.horizontal)
     }
 }
 
@@ -52,8 +73,6 @@ struct CardView: View {
 
 
 
-
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let game = EmojiMemoryGame()
@@ -63,3 +82,7 @@ struct ContentView_Previews: PreviewProvider {
             .preferredColorScheme(.light)
     }
 }
+
+
+
+

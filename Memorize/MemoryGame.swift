@@ -5,12 +5,27 @@
 //  Created by Maryia Karpava on 02/03/2023.
 //
 
-// Our model:
+
 import Foundation
+
 
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: Array<Card>
     private var indexOfTheOneAndOnlyFaceUpCard: Int?
+    
+    
+    init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
+        cards = Array<Card>()
+        // add numberOfPairsIfCards * 2 cards to cards array
+        
+        for pairIndex in 0..<numberOfPairsOfCards {
+            let content = createCardContent(pairIndex)
+            cards.append(Card(content: content, id: pairIndex*2))
+            cards.append(Card(content: content, id: pairIndex*2+1))
+        }
+        
+        cards.shuffle()
+    }
     
     
     mutating func choose(_ card: Card) {
@@ -43,17 +58,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
         return nil
     }
-    
-    init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
-        cards = Array<Card>()
-        // add numberOfPairsIfCards * 2 cards to cards array
-        for pairIndex in 0..<numberOfPairsOfCards {
-            let content = createCardContent(pairIndex)
-            cards.append(Card(content: content, id: pairIndex*2))
-            cards.append(Card(content: content, id: pairIndex*2+1))
-        }
-    }
-    
     
     
     struct Card: Identifiable {
