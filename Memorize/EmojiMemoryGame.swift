@@ -9,10 +9,11 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
     private var theme: Theme
+    // ["✈️", "🚁", "🚘", "🚃", "🚇"]
     
     static var themes: Array<Theme> = [
         Theme(name: "Animals", colour: "green", emojis: ["🐶", "🐭", "🦊", "🐻", "🐼", "🐸", "🐵", "🐥", "🦄", "🐰", "🐷", "🐴", "🦉", "🐱", "🐹", "🐻‍❄️", "🐨", "🐤", "🦁", "🐒", "🦋", "🐺"], numberOfPairsOfCardsToShow: 13),
-        Theme(name: "Vehicles", colour: "red", emojis: ["✈️", "🚁", "🚘", "🚃", "🚇", "🚛", "🛳️", "🚲", "🛴"], numberOfPairsOfCardsToShow: 9),
+        Theme(name: "Vehicles", colour: "red", emojis: ["✈️", "🚁", "🚘"], numberOfPairsOfCardsToShow: 3),
         Theme(name: "House", colour: "blue", emojis: ["🛁", "🛏️", "🔑", "🪑", "🧸", "🖼️", "🪞", "🚽", "🛋️"], numberOfPairsOfCardsToShow: 9),
         Theme(name: "Body", colour: "yellow", emojis: ["🦶🏻", "🦵", "🦷", "👅", "👄", "👂", "👃", "👁️", "🫀"], numberOfPairsOfCardsToShow: 9),
         Theme(name: "Clothes", colour: "brown", emojis: ["👕", "👖", "👗", "🩱", "👘", "👠", "🥾", "👒", "👙"], numberOfPairsOfCardsToShow: 9),
@@ -21,6 +22,29 @@ class EmojiMemoryGame: ObservableObject {
     
     var themeName: String {
         theme.name
+    }
+    
+    var themeColour: Color {
+        switch theme.colour {
+        case "green":
+            return .green
+        case "red":
+            return .red
+        case "blue":
+            return .blue
+        case "yellow":
+            return .yellow
+        case "brown":
+            return .brown
+        case "orange":
+            return .orange
+        default:
+            return .red
+        }
+    }
+    
+    var score: Int {
+        model.score
     }
     
     @Published private var model: MemoryGame<String>
