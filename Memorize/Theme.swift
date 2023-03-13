@@ -19,4 +19,14 @@ struct Theme {
         self.emojis = emojis
         self.numberOfPairsOfCardsToShow = numberOfPairsOfCardsToShow > emojis.count ? emojis.count : numberOfPairsOfCardsToShow
     }
+    
+    init(name: String, colour: String, emojis: Array<String>) {
+        self.name = name
+        self.colour = colour
+        self.emojis = emojis
+        // self.numberOfPairsOfCardsToShow = emojis.count
+        self.numberOfPairsOfCardsToShow = Int.random(in: 3...emojis.count)
+    }
+    
+    
 }
