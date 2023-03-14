@@ -68,7 +68,11 @@ struct CardView: View {
             } else if card.isMatched {
                 shape.opacity(0)
             } else {
-                shape.fill()
+//                shape.fill()
+                shape.fill(LinearGradient(
+                    gradient: Gradient(colors: [.blue,.green]),
+                    startPoint: .leading,
+                    endPoint: .trailing))
             }
         }
     }
