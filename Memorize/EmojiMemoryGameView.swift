@@ -64,6 +64,7 @@ struct CardView: View {
                     from any angle  you are using.
                     Also origin when you are drawing starts from top left corner. 
                      */
+                    // -90, 60
                     Pie(startAngle: Angle(degrees: 0-90), endAngle: Angle(degrees: 150-90))
                         .padding(5).opacity(0.5)
                     

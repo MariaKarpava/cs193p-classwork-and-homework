@@ -25,9 +25,11 @@ struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiabl
     var body: some View {
         GeometryReader { geometry in
             VStack {
+                // width - width of the column (card) so that all cars can fit into the screen (into the geometry.size)
                 let width: CGFloat = widthThatFits(itemCount: items.count, in: geometry.size, itemAspectRatio: aspectRatio)
                 
                 // Things in GeometryReader should be flexible in size - add VStack
+                //adaptiveGridItem - func. that describes the number of columns to draw, but the width of the columns should be >= width
                 LazyVGrid(columns: [adaptiveGridItem(width: width)], spacing: 0) {
                     ForEach(items) { item in
                         content(item).aspectRatio(aspectRatio, contentMode: .fit)
@@ -43,6 +45,7 @@ struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiabl
     
     
     private func adaptiveGridItem(width: CGFloat) -> GridItem {
+//      GridItem(.adaptive - This approach prefers to insert as many items of the minimum size as possible but lets them increase to the maximum size.
         var gridItem = GridItem(.adaptive(minimum: width))
         gridItem.spacing = 0
         
@@ -59,18 +62,21 @@ struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiabl
             let itemWidth = size.width / CGFloat(columnCount)
             let itemHeight = itemWidth / itemAspectRatio
             
+            // if all cards fit to the size then we found dimensions a card
             if CGFloat(rowCount) * itemHeight < size.height {
                 break
             }
             
             columnCount += 1
+            // this is dividing with ceiling rounding
             rowCount = (itemCount + (columnCount - 1)) / columnCount
+            
         } while columnCount < itemCount
         
         if columnCount > itemCount {
             columnCount = itemCount
         }
-        
+        // floor - round down, ceiling - round up, round - like in math
         return floor(size.width / CGFloat(columnCount))
     }
     

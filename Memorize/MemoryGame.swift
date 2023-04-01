@@ -14,6 +14,9 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     private var indexOfTheOneAndOnlyFaceUpCard: Int? {
         get { cards.indices.filter({ cards[$0].isFaceUp }).oneAndOnly }
         set {
+            /*
+             In all cards we set isFaceUp property. newValue - value we are setting in this computed property. If the index of a card == newValue, we set its isFaceUp property to true, all others to false.
+             */
             cards.indices.forEach { cards[$0].isFaceUp = ($0 == newValue) }
         }
     }
