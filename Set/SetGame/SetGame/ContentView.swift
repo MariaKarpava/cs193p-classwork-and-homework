@@ -5,29 +5,55 @@
 //  Created by Maryia Karpava on 01/04/2023.
 //
 
+
 import SwiftUI
 
 struct ContentView: View {
+    let columns = [
+        GridItem(.adaptive(minimum: 60))
+    ]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-            Oval()
+        ScrollView (.vertical) {
+            LazyVGrid(columns: columns) {
+                ForEach(Cards.createCards(), id: \.id) { card in
+                    CardView().aspectRatio(2/3, contentMode: .fit)
+                }
+            }
+            .foregroundColor(.red)
         }
-        .padding()
+    }      
+}
+
+
+
+
+struct Card {
+    var isSelected: Bool = false
+    let id = UUID()
+}
+
+
+struct Cards {
+    static func createCards() -> [Card] {
+        var cards:[Card] = []
+        
+        for _ in 0..<20 {
+            cards.append(Card())
+        }
+        return cards
     }
 }
 
-struct Oval: View {
+
+
+
+struct CardView: View {
     var body: some View {
-        Ellipse()
-            .fill(.blue)
-            .frame(width: 100, height: 50)
+        RoundedRectangle(cornerRadius: 10)
+            .foregroundColor(.red)
     }
 }
-
 
 
 
