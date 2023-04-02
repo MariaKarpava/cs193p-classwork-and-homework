@@ -11,7 +11,8 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         AspectVGrid(items: Cards.createCards(), aspectRatio: 2/3, minWidth: 70) { card in
-            CardView()
+            CardView().padding(4)
+                
         }
     }      
 }
@@ -42,11 +43,10 @@ struct Cards {
 struct CardView: View {
     var body: some View {
         GeometryReader { geometry in
-            RoundedRectangle(cornerRadius: 10)
-                .foregroundColor(.red)
-                .frame(width: geometry.size.width, height: geometry.size.height)
+            let shape = RoundedRectangle(cornerRadius: 10)
+            shape.fill().foregroundColor(.white)
+            shape.stroke(.red, lineWidth: 3)
         }
-        
     }
 }
 
