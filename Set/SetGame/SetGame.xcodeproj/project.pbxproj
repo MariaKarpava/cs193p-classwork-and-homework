@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		704697AD29DA05E60052D428 /* ShapesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704697AC29DA05E60052D428 /* ShapesView.swift */; };
+		704F174929DA2D6B002E375E /* AspectVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704F174829DA2D6B002E375E /* AspectVGrid.swift */; };
 		7054F06929D89809008403A3 /* SetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7054F06829D89809008403A3 /* SetModel.swift */; };
 		7074582E29D88EEB007E6ED9 /* SetGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7074582D29D88EEB007E6ED9 /* SetGameApp.swift */; };
 		7074583029D88EEB007E6ED9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7074582F29D88EEB007E6ED9 /* ContentView.swift */; };
@@ -17,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		704697AC29DA05E60052D428 /* ShapesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapesView.swift; sourceTree = "<group>"; };
+		704F174829DA2D6B002E375E /* AspectVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectVGrid.swift; sourceTree = "<group>"; };
 		7054F06829D89809008403A3 /* SetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetModel.swift; sourceTree = "<group>"; };
 		7074582A29D88EEB007E6ED9 /* SetGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SetGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7074582D29D88EEB007E6ED9 /* SetGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameApp.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 				7074583129D88EEC007E6ED9 /* Assets.xcassets */,
 				7074583329D88EEC007E6ED9 /* Preview Content */,
 				704697AC29DA05E60052D428 /* ShapesView.swift */,
+				704F174829DA2D6B002E375E /* AspectVGrid.swift */,
 			);
 			path = SetGame;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 				7074583029D88EEB007E6ED9 /* ContentView.swift in Sources */,
 				7054F06929D89809008403A3 /* SetModel.swift in Sources */,
 				704697AD29DA05E60052D428 /* ShapesView.swift in Sources */,
+				704F174929DA2D6B002E375E /* AspectVGrid.swift in Sources */,
 				7074582E29D88EEB007E6ED9 /* SetGameApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

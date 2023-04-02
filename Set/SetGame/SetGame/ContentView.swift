@@ -9,18 +9,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    let columns = [
-        GridItem(.adaptive(minimum: 60))
-    ]
-    
     var body: some View {
-        ScrollView (.vertical) {
-            LazyVGrid(columns: columns) {
-                ForEach(Cards.createCards(), id: \.id) { card in
-                    CardView().aspectRatio(2/3, contentMode: .fit)
-                }
-            }
-            .foregroundColor(.red)
+        AspectVGrid(items: Cards.createCards(), aspectRatio: 2/3, minWidth: 70) { card in
+            CardView()
         }
     }      
 }
@@ -28,7 +19,7 @@ struct ContentView: View {
 
 
 
-struct Card {
+struct Card: Identifiable {
     var isSelected: Bool = false
     let id = UUID()
 }
@@ -38,7 +29,7 @@ struct Cards {
     static func createCards() -> [Card] {
         var cards:[Card] = []
         
-        for _ in 0..<20 {
+        for _ in 0..<81 {
             cards.append(Card())
         }
         return cards
@@ -50,8 +41,12 @@ struct Cards {
 
 struct CardView: View {
     var body: some View {
-        RoundedRectangle(cornerRadius: 10)
-            .foregroundColor(.red)
+        GeometryReader { geometry in
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(.red)
+                .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        
     }
 }
 

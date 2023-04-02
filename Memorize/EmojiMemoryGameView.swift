@@ -27,8 +27,6 @@ struct EmojiMemoryGameView: View {
         .foregroundColor(.red)
         .padding(.horizontal)
     }
-    
-
 }
 
 
