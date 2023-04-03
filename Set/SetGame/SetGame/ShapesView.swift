@@ -7,7 +7,12 @@
 
 import SwiftUI
 
-struct Oval: View {
+struct Oval: View, ConfigurableCard {
+    
+    func addColor() -> some View {
+        self.opacity(0.4)
+    }
+    
     var body: some View {
         Capsule()
             .fill(.red)
@@ -35,6 +40,24 @@ struct Square: View {
             .fill(.red)
     }
 }
+
+
+protocol ConfigurableCard {
+//    func addColor() -> some View
+//    func stripe()
+//    func addTransparency()
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
