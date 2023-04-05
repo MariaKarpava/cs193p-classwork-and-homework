@@ -40,7 +40,7 @@ struct CardsFactory {
         let shapes = ["diamond", "oval", "square"]
         let numberOfShapes = [1, 2, 3]
         let colours = ["red", "green", "purple"]
-        let shading = ["solid", "stripped", "outlined"]
+        let shading = ["solid", "semi-transparent", "outlined"]
     
         
         for shape in shapes {
@@ -64,17 +64,32 @@ struct CardView: View {
     
     func mapColour() -> Color {
         var colour = Color.red
-            switch card.colours {
-            case "red":
-                colour = .red
-            case "green":
-                colour = .green
-            case "purple":
-                colour = .purple
-            default:
-                colour = .black
-            }
+        switch card.colours {
+        case "red":
+            colour = .red
+        case "green":
+            colour = .green
+        case "purple":
+            colour = .purple
+        default:
+            colour = .black
+        }
         return colour
+    }
+    
+    func mapShading() -> Double {
+        var opacity: Double = 0
+        switch card.shading {
+        case "solid":
+            opacity = 1
+        case "semi-transparent":
+            opacity = 0.5
+        case "outlined":
+            opacity = 0
+        default:
+            opacity = 1
+        }
+        return opacity
     }
     
     
@@ -85,30 +100,21 @@ struct CardView: View {
                 shape.stroke(.red, lineWidth: 3)
                 shape.foregroundColor(.white)
                 
-                
-                
                 VStack{
                     ForEach(0..<card.numberOfShapes, id: \.self) { _ in
                        
                         Group {
                             if card.shapes == "diamond" {
-                                Diamond(colour: self.mapColour())
+                                Diamond(colour: self.mapColour(), opacity: self.mapShading())
                             } else if card.shapes == "oval" {
-                                Oval(colour: self.mapColour())
+                                Oval(colour: self.mapColour(), opacity: self.mapShading())
                             } else if card.shapes == "square" {
-                                Square(colour: self.mapColour())
+                                Square(colour: self.mapColour(), opacity: self.mapShading())
                             }
                         }.frame(width: geometry.size.width*0.3, height: geometry.size.width*0.3)
                     }
                 }
             }
-            
-            
-            
-                            
-//            shape.overlay(alignment: .center) { card.shape
-//                .frame(width: geometry.size.width*0.5, height: geometry.size.width*0.3)
-//            }.foregroundColor(.white)
         }
     }
 }

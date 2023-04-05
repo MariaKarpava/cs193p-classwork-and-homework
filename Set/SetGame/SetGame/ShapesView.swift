@@ -7,25 +7,36 @@
 
 import SwiftUI
 
-protocol ConfigurableCard {
-    func setColour(colour: Color)
-}
-
 
 struct Oval: View {
     var colour: Color
+    var opacity: Double
     
     var body: some View {
-        Capsule().fill(colour)
+        Capsule()
+            .fill(colour)
+            .opacity(opacity)
+            .overlay(
+                        Capsule()
+                            .stroke(colour, lineWidth: 2)
+                    )
     }
 }
 
 
 struct Diamond: View {
     var colour: Color
+    var opacity: Double
     
     var body: some View {
-        DiamondShape().fill(colour)
+        DiamondShape()
+            .fill(colour)
+            .opacity(opacity)
+            .overlay(
+                        DiamondShape()
+                            .stroke(colour, lineWidth: 2)
+                    )
+        
     }
     
     private struct DiamondShape: Shape {
@@ -45,10 +56,16 @@ struct Diamond: View {
 
 struct Square: View {
     var colour: Color
+    var opacity: Double
     
     var body: some View {
         Rectangle()
             .fill(colour)
+            .opacity(opacity)
+            .overlay(
+                        Rectangle()
+                            .stroke(colour, lineWidth: 2)
+                    )
     }
 }
 
