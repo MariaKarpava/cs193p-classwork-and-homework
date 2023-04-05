@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        AspectVGrid(items: CardsFactory.createCards(), aspectRatio: 2/3, minWidth: 70) { card in
+        AspectVGrid(items: CardsFactory.createCards(), aspectRatio: 2/3, minWidth: 80) { card in
             CardView(card: card).padding(4)
                 
         }
@@ -29,6 +29,7 @@ struct CardModel: Identifiable {
     let shading: String
     
     let id = UUID()
+    
 }
 
 
@@ -59,11 +60,49 @@ struct CardsFactory {
 
 struct CardView: View {
     var card: CardModel
+    var allCards = CardsFactory.createCards()
+    
+    func mapColour() -> Color {
+        var colour = Color.red
+            switch card.colours {
+            case "red":
+                colour = .red
+            case "green":
+                colour = .green
+            case "purple":
+                colour = .purple
+            default:
+                colour = .black
+            }
+        return colour
+    }
+    
     
     var body: some View {
         GeometryReader { geometry in
-            let shape = RoundedRectangle(cornerRadius: 10)
-            shape.stroke(.red, lineWidth: 3)
+            ZStack{
+                let shape = RoundedRectangle(cornerRadius: 10)
+                shape.stroke(.red, lineWidth: 3)
+                shape.foregroundColor(.white)
+                
+                
+                
+                VStack{
+                    ForEach(0..<card.numberOfShapes, id: \.self) { _ in
+                       
+                        Group {
+                            if card.shapes == "diamond" {
+                                Diamond(colour: self.mapColour())
+                            } else if card.shapes == "oval" {
+                                Oval(colour: self.mapColour())
+                            } else if card.shapes == "square" {
+                                Square(colour: self.mapColour())
+                            }
+                        }.frame(width: geometry.size.width*0.3, height: geometry.size.width*0.3)
+                    }
+                }
+            }
+            
             
             
                             

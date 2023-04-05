@@ -7,46 +7,51 @@
 
 import SwiftUI
 
-struct Oval: View, ConfigurableCard {
-    
-    func addColor() -> some View {
-        self.opacity(0.4)
-    }
+protocol ConfigurableCard {
+    func setColour(colour: Color)
+}
+
+
+struct Oval: View {
+    var colour: Color
     
     var body: some View {
-        Capsule()
-            .fill(.red)
+        Capsule().fill(colour)
     }
 }
 
 
-struct Diamond: Shape {
-    func path(in rect: CGRect) -> Path {
-        Path() { p in
-            p.move(to: CGPoint(x: rect.midX, y: rect.minY))
-            p.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
-            p.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
-            p.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
-            p.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
-            p.closeSubpath()
+struct Diamond: View {
+    var colour: Color
+    
+    var body: some View {
+        DiamondShape().fill(colour)
+    }
+    
+    private struct DiamondShape: Shape {
+        func path(in rect: CGRect) -> Path {
+            Path() { p in
+                p.move(to: CGPoint(x: rect.midX, y: rect.minY))
+                p.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
+                p.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
+                p.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+                p.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
+                p.closeSubpath()
+            }
         }
     }
 }
 
 
 struct Square: View {
+    var colour: Color
+    
     var body: some View {
         Rectangle()
-            .fill(.red)
+            .fill(colour)
     }
 }
 
-
-protocol ConfigurableCard {
-//    func addColor() -> some View
-//    func stripe()
-//    func addTransparency()
-}
 
 
 
