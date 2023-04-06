@@ -9,18 +9,87 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        AspectVGrid(items: CardsFactory.createCards(), aspectRatio: 2/3, minWidth: 80) { card in
-            CardView(card: card).padding(4)
-                
+    @State private var cardsToShow: [CardModel] = []
+    
+    func dealThreeCards() -> [CardModel] {
+        var allCards = Set(CardsFactory.createCards())
+        var threeCards:[CardModel] = []
+        
+        for _ in 0..<3 {
+            if let randomCard = allCards.randomElement() {
+                threeCards.append(randomCard)
+                allCards.remove(randomCard)
+            }
         }
-    }      
+        return threeCards
+    }
+    
+    func dealTwelveCards() -> [CardModel] {
+        var allCards = Set(CardsFactory.createCards())
+        var threeCards:[CardModel] = []
+        
+        for _ in 0..<12 {
+            if let randomCard = allCards.randomElement() {
+                threeCards.append(randomCard)
+                allCards.remove(randomCard)
+            }
+        }
+        return threeCards
+    }
+    
+    
+    var body: some View {
+        VStack {
+            AspectVGrid(items: cardsToShow, aspectRatio: 2/3, minWidth: 80) { card in
+                CardView(card: card)
+                    .padding(4)
+            }
+            
+            HStack {
+                Button {
+                    let newCards = dealThreeCards()
+                    if cardsToShow.count + newCards.count > 81 {
+                        return
+                    }
+                    cardsToShow.append(contentsOf: newCards)
+                } label: {
+                    Text("Deal Three More Cards")
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }.padding(.top)
+                
+                Button {
+                    let newCards = dealTwelveCards()
+                    cardsToShow.append(contentsOf: newCards)
+                    
+                    if cardsToShow.count >= 12 {
+                        cardsToShow = []
+                        let newCards = dealTwelveCards()
+                        cardsToShow.append(contentsOf: newCards)
+                    }
+                } label: {
+                    Text("New Game")
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }.padding(.top)
+
+            }
+            
+            Spacer()
+            
+        }
+    }
 }
 
 
 
+
 // TODO: make sure *Model types know nothing about View-layer (SwiftUI). Hint: you draw views based on models.
-struct CardModel: Identifiable {
+struct CardModel: Identifiable, Hashable {
     var isSelected: Bool = false
     
     let shapes: String
