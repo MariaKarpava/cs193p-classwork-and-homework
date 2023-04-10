@@ -20,7 +20,6 @@ struct ContentView: View {
             
             HStack {
                 Button {
-                    // TODO: here and in similar places: naming: view should not give instructions to the VM. It should notify about events. E.g.: `addThreeCards` -> `onDealCardsTapped`. It will be a private decision of the VM that it needs to add 3 cards in response to this event.
                     viewModel.onDealCardsTapped()
                 } label: {
                     Text("Deal Three More Cards")
@@ -140,20 +139,9 @@ struct CardView: View {
                         }.frame(width: geometry.size.width*0.3, height: geometry.size.width*0.3)
                     }
                 }
-//            }.onTapGesture {
-////                isCardSelected.toggle()
-//                card.isSelected.toggle()
-//
-////                let selectedCards = allCards.filter { $0.isSelected }
-////
-////                if isCardSelected {
-////                    numberOfSelectedCards += 1
-////                }
-////
-////                if numberOfSelectedCards > 3 {
-////                    print("More than 3 different cards selected!")
-////                }
-//
+            }.onTapGesture {
+                isCardSelected.toggle()
+                
             }
         }
     }

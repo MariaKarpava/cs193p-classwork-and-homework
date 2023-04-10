@@ -11,25 +11,12 @@ import Foundation
 // TODO: restrict access as much as possible to members
 class SetViewModel: ObservableObject {
     @Published var cardsToShow: [CardModel] = []
+    var allCards = Set(CardsFactory.createCards())
     
-    func dealThreeCards() -> [CardModel] {
-        var allCards = Set(CardsFactory.createCards())
+    private func dealThreeCards() -> [CardModel] {
         var threeCards:[CardModel] = []
         
         for _ in 0..<3 {
-            if let randomCard = allCards.randomElement() {
-                threeCards.append(randomCard)
-                allCards.remove(randomCard)
-            }
-        }
-        return threeCards
-    }
-    
-    func dealTwelveCards() -> [CardModel] {
-        var allCards = Set(CardsFactory.createCards())
-        var threeCards:[CardModel] = []
-        
-        for _ in 0..<12 {
             if let randomCard = allCards.randomElement() {
                 threeCards.append(randomCard)
                 allCards.remove(randomCard)
@@ -47,17 +34,24 @@ class SetViewModel: ObservableObject {
     }
     
     func onNewGameTapped() {
-        let newTwelveCards = dealTwelveCards()
-        cardsToShow.append(contentsOf: newTwelveCards)
-
-        if cardsToShow.count >= 12 {
-            cardsToShow = []
-            let newTwelveCards = dealTwelveCards()
-            cardsToShow.append(contentsOf: newTwelveCards)
-        }
+        allCards = generateAllPossibleCards()
+        cardsToShow = random(12, from: allCards)
+        cardsToShow.forEach { allCards.remove($0) }
     }
     
-
+    private func generateAllPossibleCards() -> Set<CardModel> {
+        return Set(CardsFactory.createCards())
+    }
+    
+    private func random(_ count: Int, from cards: Set<CardModel>) -> [CardModel] {
+        var result: [CardModel] = []
+        for _ in 1...count {
+            if let randomCard = cards.randomElement() {
+                result.append(randomCard)
+            }
+        }
+        return result
+    }
 }
 
 
