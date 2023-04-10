@@ -8,22 +8,13 @@
 import Foundation
 
 
-
-//struct Card {
-//    var isSelected: Bool
-//
-//    // let content: CardContent
-//    let id: Int
-//}
-//
-//struct Deck {
-//    var cards: [Card]
-//    var numberOfCardsAtStart: Int = 12
-//    var numberOfCardsToAdd: Int = 3
-//    var numberOfCardsInDeck: Int = 81
-//
-//    mutating func addCard(card: Card) {
-//        cards.append(card)
-//    }
-//}
-//
+struct CardModel: Identifiable, Hashable {
+    var isSelected: Bool = false
+    
+    let shapes: String
+    let numberOfShapes: Int
+    let colours: String
+    let shading: String
+    
+    let id = UUID()
+}

@@ -65,7 +65,7 @@ struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiabl
             let itemWidth = size.width / CGFloat(columnCount)
             let itemHeight = itemWidth / itemAspectRatio
             
-            // if all cards fit to the size then we found dimensions a card
+            // if all cards fit to the size then we found dimensions of a card
             if CGFloat(rowCount) * itemHeight < size.height {
                 break
             }

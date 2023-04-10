@@ -9,49 +9,19 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var cardsToShow: [CardModel] = []
-    
-    func dealThreeCards() -> [CardModel] {
-        var allCards = Set(CardsFactory.createCards())
-        var threeCards:[CardModel] = []
-        
-        for _ in 0..<3 {
-            if let randomCard = allCards.randomElement() {
-                threeCards.append(randomCard)
-                allCards.remove(randomCard)
-            }
-        }
-        return threeCards
-    }
-    
-    func dealTwelveCards() -> [CardModel] {
-        var allCards = Set(CardsFactory.createCards())
-        var threeCards:[CardModel] = []
-        
-        for _ in 0..<12 {
-            if let randomCard = allCards.randomElement() {
-                threeCards.append(randomCard)
-                allCards.remove(randomCard)
-            }
-        }
-        return threeCards
-    }
-    
+    @StateObject private var viewModel: SetViewModel = SetViewModel()
     
     var body: some View {
         VStack {
-            AspectVGrid(items: cardsToShow, aspectRatio: 2/3, minWidth: 80) { card in
+            AspectVGrid(items: viewModel.cardsToShow, aspectRatio: 2/3, minWidth: 80) { card in
                 CardView(card: card)
                     .padding(4)
             }
             
             HStack {
                 Button {
-                    let newCards = dealThreeCards()
-                    if cardsToShow.count + newCards.count > 81 {
-                        return
-                    }
-                    cardsToShow.append(contentsOf: newCards)
+                    // TODO: here and in similar places: naming: view should not give instructions to the VM. It should notify about events. E.g.: `addThreeCards` -> `onDealCardsTapped`. It will be a private decision of the VM that it needs to add 3 cards in response to this event.
+                    viewModel.onDealCardsTapped()
                 } label: {
                     Text("Deal Three More Cards")
                         .padding()
@@ -61,14 +31,7 @@ struct ContentView: View {
                 }.padding(.top)
                 
                 Button {
-                    let newCards = dealTwelveCards()
-                    cardsToShow.append(contentsOf: newCards)
-                    
-                    if cardsToShow.count >= 12 {
-                        cardsToShow = []
-                        let newCards = dealTwelveCards()
-                        cardsToShow.append(contentsOf: newCards)
-                    }
+                    viewModel.onNewGameTapped()
                 } label: {
                     Text("New Game")
                         .padding()
@@ -88,18 +51,6 @@ struct ContentView: View {
 
 
 
-// TODO: make sure *Model types know nothing about View-layer (SwiftUI). Hint: you draw views based on models.
-struct CardModel: Identifiable, Hashable {
-    var isSelected: Bool = false
-    
-    let shapes: String
-    let numberOfShapes: Int
-    let colours: String
-    let shading: String
-    
-    let id = UUID()
-    
-}
 
 
 struct CardsFactory {
@@ -128,8 +79,14 @@ struct CardsFactory {
 
 
 struct CardView: View {
+//    @Binding var card: CardModel
     var card: CardModel
     var allCards = CardsFactory.createCards()
+    
+    @State private var selectedColour = Color.green
+    @State private var isCardSelected = false
+    
+    @State private var numberOfSelectedCards = 0
     
     func mapColour() -> Color {
         var colour = Color.red
@@ -166,7 +123,7 @@ struct CardView: View {
         GeometryReader { geometry in
             ZStack{
                 let shape = RoundedRectangle(cornerRadius: 10)
-                shape.stroke(.red, lineWidth: 3)
+                shape.stroke(isCardSelected ? Color.green : Color.red, lineWidth: 3)
                 shape.foregroundColor(.white)
                 
                 VStack{
@@ -183,6 +140,20 @@ struct CardView: View {
                         }.frame(width: geometry.size.width*0.3, height: geometry.size.width*0.3)
                     }
                 }
+//            }.onTapGesture {
+////                isCardSelected.toggle()
+//                card.isSelected.toggle()
+//
+////                let selectedCards = allCards.filter { $0.isSelected }
+////
+////                if isCardSelected {
+////                    numberOfSelectedCards += 1
+////                }
+////
+////                if numberOfSelectedCards > 3 {
+////                    print("More than 3 different cards selected!")
+////                }
+//
             }
         }
     }
