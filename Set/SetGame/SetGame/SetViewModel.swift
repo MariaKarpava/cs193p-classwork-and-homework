@@ -41,14 +41,23 @@ class SetViewModel: ObservableObject {
         cardsToShow.forEach { allCards.remove($0) }
     }
     
+    
+  
     func onCardSelected(cardId: UUID) {
-        // find card
-        // set its flag
         guard let selectedCardIndex = cardsToShow.firstIndex(where: { $0.id == cardId }) else {
             return
         }
         cardsToShow[selectedCardIndex].isCardSelected.toggle()
+        
+        
+        let numberOfSelectedCards = cardsToShow.filter { $0.isCardSelected }.count
+        if numberOfSelectedCards == 3 {
+            for index in 0..<cardsToShow.count {
+                cardsToShow[index].isCardSelected = false
+            }
+        }
     }
+        
     
     private func generateAllPossibleCards() -> Set<CardModel> {
         return Set(CardsFactory.createCards())
