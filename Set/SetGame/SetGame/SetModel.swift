@@ -9,7 +9,7 @@ import Foundation
 
 
 struct CardModel: Identifiable, Hashable {
-    var isSelected: Bool = false
+    var isCardSelected = false
     
     let shapes: String
     let numberOfShapes: Int

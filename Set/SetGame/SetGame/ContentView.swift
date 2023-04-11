@@ -14,7 +14,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             AspectVGrid(items: viewModel.cardsToShow, aspectRatio: 2/3, minWidth: 80) { card in
-                CardView(card: card)
+                CardView(card: card, viewModel: viewModel)
                     .padding(4)
             }
             
@@ -78,14 +78,9 @@ struct CardsFactory {
 
 
 struct CardView: View {
-//    @Binding var card: CardModel
-    var card: CardModel
-    var allCards = CardsFactory.createCards()
+    let card: CardModel
+    let viewModel: SetViewModel
     
-    @State private var selectedColour = Color.green
-    @State private var isCardSelected = false
-    
-    @State private var numberOfSelectedCards = 0
     
     func mapColour() -> Color {
         var colour = Color.red
@@ -122,7 +117,8 @@ struct CardView: View {
         GeometryReader { geometry in
             ZStack{
                 let shape = RoundedRectangle(cornerRadius: 10)
-                shape.stroke(isCardSelected ? Color.green : Color.red, lineWidth: 3)
+                shape.stroke(card.isCardSelected ? Color.green : Color.red, lineWidth: 3)
+    
                 shape.foregroundColor(.white)
                 
                 VStack{
@@ -140,8 +136,7 @@ struct CardView: View {
                     }
                 }
             }.onTapGesture {
-                isCardSelected.toggle()
-                
+                viewModel.onCardSelected(cardId: card.id)
             }
         }
     }

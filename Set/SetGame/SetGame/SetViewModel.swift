@@ -10,9 +10,11 @@ import Foundation
 
 // TODO: restrict access as much as possible to members
 class SetViewModel: ObservableObject {
+    
     @Published var cardsToShow: [CardModel] = []
     var allCards = Set(CardsFactory.createCards())
     
+
     private func dealThreeCards() -> [CardModel] {
         var threeCards:[CardModel] = []
         
@@ -39,19 +41,34 @@ class SetViewModel: ObservableObject {
         cardsToShow.forEach { allCards.remove($0) }
     }
     
+    func onCardSelected(cardId: UUID) {
+        // find card
+        // set its flag
+        guard let selectedCardIndex = cardsToShow.firstIndex(where: { $0.id == cardId }) else {
+            return
+        }
+        cardsToShow[selectedCardIndex].isCardSelected.toggle()
+    }
+    
     private func generateAllPossibleCards() -> Set<CardModel> {
         return Set(CardsFactory.createCards())
     }
     
     private func random(_ count: Int, from cards: Set<CardModel>) -> [CardModel] {
+        var localCards = cards
         var result: [CardModel] = []
         for _ in 1...count {
-            if let randomCard = cards.randomElement() {
+            if let randomCard = localCards.randomElement() {
+                
                 result.append(randomCard)
+                localCards.remove(randomCard)
             }
+            
         }
         return result
     }
+    
+    
 }
 
 
