@@ -9,7 +9,14 @@ import Foundation
 
 
 struct CardModel: Identifiable, Hashable {
-    var isCardSelected = false
+    var isSelected = false
+    var matchingState: MatchingStates = .unknown
+    
+    enum MatchingStates {
+        case success
+        case notSuccess
+        case unknown
+    }
     
     let shapes: String
     let numberOfShapes: Int

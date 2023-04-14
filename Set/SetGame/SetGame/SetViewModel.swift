@@ -47,17 +47,71 @@ class SetViewModel: ObservableObject {
         guard let selectedCardIndex = cardsToShow.firstIndex(where: { $0.id == cardId }) else {
             return
         }
-        cardsToShow[selectedCardIndex].isCardSelected.toggle()
+        cardsToShow[selectedCardIndex].isSelected = true
         
+        let numberOfSelectedCards = cardsToShow.filter { $0.isSelected }.count
+        let selectedCards = cardsToShow.filter { $0.isSelected }
         
-        let numberOfSelectedCards = cardsToShow.filter { $0.isCardSelected }.count
-        if numberOfSelectedCards == 3 {
-            for index in 0..<cardsToShow.count {
-                cardsToShow[index].isCardSelected = false
+        if numberOfSelectedCards == 1 || numberOfSelectedCards == 2 {
+            // change matching state the selected card to unknown
+            cardsToShow[selectedCardIndex].matchingState = .unknown
+            
+        } else if numberOfSelectedCards == 3 {
+            // if is Set - change matching state all selected cards to success
+            // else - change matching state all selected cards to not success
+            if isSet(selectedCards: selectedCards) {
+                for i in 0..<cardsToShow.count {
+                    if cardsToShow[i].isSelected {
+                        cardsToShow[i].matchingState = .success
+                    }
+                }
+            } else {
+                for i in 0..<cardsToShow.count {
+                    if cardsToShow[i].isSelected {
+                        cardsToShow[i].matchingState = .notSuccess
+                    }
+                }
             }
         }
+            
+        if numberOfSelectedCards == 4 {
+            deselect()
+            cardsToShow[selectedCardIndex].isSelected = true 
+        }
+            
+        
     }
         
+    
+    func deselect() {
+        for index in 0..<cardsToShow.count {
+            cardsToShow[index].isSelected = false
+            cardsToShow[index].matchingState = .unknown
+        }
+    }
+    
+    private func isSet(selectedCards: [CardModel]) -> Bool {
+        let shapes = selectedCards.map { $0.shapes }
+        let numberOfShapes = selectedCards.map { $0.numberOfShapes }
+        let colours = selectedCards.map { $0.colours }
+        let shading = selectedCards.map { $0.shading }
+        
+        let numberOfUniqueShapes = Set(shapes).count
+        let numberOfUniqueNumberOfShapes = Set(numberOfShapes).count
+        let numberOfUniqueColours = Set(colours).count
+        let numberOfUniqueShading = Set(shading).count
+        
+        if (numberOfUniqueShapes == 1 || numberOfUniqueShapes == 3) 
+//            (numberOfUniqueNumberOfShapes == 1 || numberOfUniqueNumberOfShapes == 3) &&
+//            (numberOfUniqueColours == 1 || numberOfUniqueColours == 3)
+//            (numberOfUniqueShading == 1 || numberOfUniqueShading == 3)
+        {
+            return true
+        }
+        
+        return false
+    }
+    
     
     private func generateAllPossibleCards() -> Set<CardModel> {
         return Set(CardsFactory.createCards())

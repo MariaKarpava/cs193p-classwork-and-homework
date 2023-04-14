@@ -82,6 +82,7 @@ struct CardView: View {
     let viewModel: SetViewModel
     
     
+    
     func mapColour() -> Color {
         var colour = Color.red
         switch card.colours {
@@ -112,12 +113,29 @@ struct CardView: View {
         return opacity
     }
     
+    func highlightColour() -> Color {
+        var result = Color.blue
+ 
+        if card.isSelected && card.matchingState == .success {
+            result = .green
+        } else if card.isSelected && card.matchingState == .notSuccess {
+            result = .red
+        } else if card.isSelected && card.matchingState == .unknown {
+            result = .yellow
+        }
+
+        return result
+    }
+    
     
     var body: some View {
         GeometryReader { geometry in
             ZStack{
                 let shape = RoundedRectangle(cornerRadius: 10)
-                shape.stroke(card.isCardSelected ? Color.green : Color.red, lineWidth: 3)
+//                shape.stroke(card.isCardSelected ? Color.green : Color.red, lineWidth: 3)
+                shape.stroke(highlightColour(), lineWidth: 5)
+                
+                
     
                 shape.foregroundColor(.white)
                 
