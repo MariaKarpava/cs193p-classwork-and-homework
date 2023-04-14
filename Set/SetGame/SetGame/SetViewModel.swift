@@ -47,6 +47,16 @@ class SetViewModel: ObservableObject {
         guard let selectedCardIndex = cardsToShow.firstIndex(where: { $0.id == cardId }) else {
             return
         }
+        
+        // Support “deselection” by touching already-selected cards (but only if there are 1 or 2
+        // cards (not 3) currently selected).
+        let selectedCard = cardsToShow[selectedCardIndex]
+        if selectedCard.isSelected && (cardsToShow.filter { $0.isSelected }.count < 3) {
+            cardsToShow[selectedCardIndex].isSelected = false
+            cardsToShow[selectedCardIndex].matchingState = .unknown
+            return
+        }
+        
         cardsToShow[selectedCardIndex].isSelected = true
         
         let numberOfSelectedCards = cardsToShow.filter { $0.isSelected }.count
@@ -76,19 +86,19 @@ class SetViewModel: ObservableObject {
             
         if numberOfSelectedCards == 4 {
             deselect()
-            cardsToShow[selectedCardIndex].isSelected = true 
+            cardsToShow[selectedCardIndex].isSelected = true
         }
-            
-        
     }
         
     
-    func deselect() {
+    private func deselect() {
         for index in 0..<cardsToShow.count {
             cardsToShow[index].isSelected = false
             cardsToShow[index].matchingState = .unknown
         }
     }
+    
+    
     
     private func isSet(selectedCards: [CardModel]) -> Bool {
         let shapes = selectedCards.map { $0.shapes }
