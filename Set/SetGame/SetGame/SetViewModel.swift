@@ -12,16 +12,16 @@ import Foundation
 class SetViewModel: ObservableObject {
     
     @Published var cardsToShow: [CardModel] = []
-    var allCards = Set(CardsFactory.createCards())
+    var cardDeck = CardDeck()
     
 
     private func dealThreeCards() -> [CardModel] {
         var threeCards:[CardModel] = []
         
         for _ in 0..<3 {
-            if let randomCard = allCards.randomElement() {
+            if let randomCard = cardDeck.cards.randomElement() {
                 threeCards.append(randomCard)
-                allCards.remove(randomCard)
+                cardDeck.cards.remove(randomCard)
             }
         }
         return threeCards
@@ -32,13 +32,47 @@ class SetViewModel: ObservableObject {
         if cardsToShow.count + newThreeCards.count > 81 {
             return
         }
-        cardsToShow.append(contentsOf: newThreeCards)
+        
+        // if already selected 3 cards create set - replace these 3 cards with new ones
+        // else - add 3 new cards to the end
+        let selectedCards = cardsToShow.filter { $0.isSelected }
+        if isSet(selectedCards: selectedCards) {
+            var indexesOfSelectedCards = [Int]()
+
+            for (index, card) in cardsToShow.enumerated() {
+                if card.isSelected {
+                    indexesOfSelectedCards.append(index)
+                }
+            }
+            
+            for i in 0..<cardsToShow.count {
+                for j in 0..<selectedCards.count {
+                    if cardsToShow[i] == selectedCards[j] {
+                        cardsToShow[i] = newThreeCards[j]
+                    }
+                }
+            }
+        } else {
+            cardsToShow.append(contentsOf: newThreeCards)
+        }
+        /*
+        Simpler version of the same code:
+         let selectedCards = cardsToShow.filter(\.isSelected)
+
+         if isSet(selectedCards: selectedCards) {
+             for (index, card) in cardsToShow.enumerated() where card.isSelected {
+                 cardsToShow[index] = newThreeCards[selectedCards.firstIndex(of: card)!]
+             }
+         } else {
+             cardsToShow += newThreeCards
+         }
+         */
     }
     
     func onNewGameTapped() {
-        allCards = generateAllPossibleCards()
-        cardsToShow = random(12, from: allCards)
-        cardsToShow.forEach { allCards.remove($0) }
+        cardDeck = CardDeck()
+        cardsToShow = random(12, from: cardDeck.cards)
+        cardsToShow.forEach { cardDeck.cards.remove($0) }
     }
     
     
@@ -85,6 +119,7 @@ class SetViewModel: ObservableObject {
         }
             
         if numberOfSelectedCards == 4 {
+//            replaceThreeMatchedCards()
             deselect()
             cardsToShow[selectedCardIndex].isSelected = true
         }
@@ -98,7 +133,20 @@ class SetViewModel: ObservableObject {
         }
     }
     
-    
+    private func replaceThreeMatchedCards() {
+        let newThreeCards = dealThreeCards()
+        if cardsToShow.count + newThreeCards.count > 81 {
+            return
+        }
+        
+        let selectedCards = cardsToShow.filter(\.isSelected)
+
+        if isSet(selectedCards: selectedCards) {
+            for (index, card) in cardsToShow.enumerated() where card.isSelected {
+                cardsToShow[index] = newThreeCards[selectedCards.firstIndex(of: card)!]
+            }
+        }
+    }
     
     private func isSet(selectedCards: [CardModel]) -> Bool {
         let shapes = selectedCards.map { $0.shapes }
@@ -123,9 +171,6 @@ class SetViewModel: ObservableObject {
     }
     
     
-    private func generateAllPossibleCards() -> Set<CardModel> {
-        return Set(CardsFactory.createCards())
-    }
     
     private func random(_ count: Int, from cards: Set<CardModel>) -> [CardModel] {
         var localCards = cards

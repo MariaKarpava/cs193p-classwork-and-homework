@@ -50,33 +50,6 @@ struct ContentView: View {
 
 
 
-
-
-struct CardsFactory {
-    static func createCards() -> [CardModel] {
-        var allCards:[CardModel] = []
-        
-        let shapes = ["diamond", "oval", "square"]
-        let numberOfShapes = [1, 2, 3]
-        let colours = ["red", "green", "purple"]
-        let shading = ["solid", "semi-transparent", "outlined"]
-    
-        
-        for shape in shapes {
-            for number in numberOfShapes {
-                for colour in colours {
-                    for shade in shading {
-                        let card = CardModel(shapes: shape, numberOfShapes: number, colours: colour, shading: shade)
-                        allCards.append(card)
-                    }
-                }
-            }
-        }
-        return allCards
-    }
-}
-
-
 struct CardView: View {
     let card: CardModel
     let viewModel: SetViewModel
@@ -132,11 +105,8 @@ struct CardView: View {
         GeometryReader { geometry in
             ZStack{
                 let shape = RoundedRectangle(cornerRadius: 10)
-//                shape.stroke(card.isCardSelected ? Color.green : Color.red, lineWidth: 3)
                 shape.stroke(highlightColour(), lineWidth: 5)
                 
-                
-    
                 shape.foregroundColor(.white)
                 
                 VStack{
