@@ -79,6 +79,7 @@ class SetViewModel: ObservableObject {
             return
         }
         
+        var selectedCards = cardsToShow.filter { $0.isSelected }
         // Support “deselection” by touching already-selected cards (but only if there are 1 or 2
         // cards (not 3) currently selected).
         let selectedCard = cardsToShow[selectedCardIndex]
@@ -86,12 +87,22 @@ class SetViewModel: ObservableObject {
             cardsToShow[selectedCardIndex].isSelected = false
             cardsToShow[selectedCardIndex].matchingState = .unknown
             return
+        } else if selectedCard.isSelected && (cardsToShow.filter { $0.isSelected }.count == 3) && !isSet(selectedCards: selectedCards) {
+            for i in 0..<cardsToShow.count {
+                if cardsToShow[i].isSelected {
+                    cardsToShow[i].isSelected = false
+                    cardsToShow[i].matchingState = .notSuccess
+                }
+            }
+            cardsToShow[selectedCardIndex].isSelected = true
+            cardsToShow[selectedCardIndex].matchingState = .unknown
+            return
         }
         
         cardsToShow[selectedCardIndex].isSelected = true
         
         let numberOfSelectedCards = cardsToShow.filter { $0.isSelected }.count
-        var selectedCards = cardsToShow.filter { $0.isSelected }
+        selectedCards = cardsToShow.filter { $0.isSelected }
         
         
         
@@ -122,7 +133,6 @@ class SetViewModel: ObservableObject {
         if numberOfSelectedCards == 4 {
             cardsToShow[selectedCardIndex].isSelected = false
             selectedCards = cardsToShow.filter { $0.isSelected }
-            print("numberOfSelectedCards% \(numberOfSelectedCards)")
             
             replaceThreeMatchedCards()
             deselect()
