@@ -26,8 +26,10 @@ struct ContentView: View {
                         .padding()
                         .background(Color.blue)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(5)
                 }.padding(.top)
+                    .disabled(viewModel.isButtonDisabled)
+                    .opacity(viewModel.isButtonDisabled ? 0.6 : 1)
                 
                 Button {
                     viewModel.onNewGameTapped()
@@ -36,7 +38,7 @@ struct ContentView: View {
                         .padding()
                         .background(Color.blue)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(5)
                 }.padding(.top)
 
             }
@@ -105,7 +107,7 @@ struct CardView: View {
         GeometryReader { geometry in
             ZStack{
                 let shape = RoundedRectangle(cornerRadius: 10)
-                shape.stroke(highlightColour(), lineWidth: 10)
+                shape.stroke(highlightColour(), lineWidth: 6)
                 
                 shape.foregroundColor(.white)
                 

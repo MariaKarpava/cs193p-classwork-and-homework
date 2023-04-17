@@ -10,20 +10,9 @@ import Foundation
 TODO:
  1. When any card is touched on and there are already 3 matching Set cards selected,
  then …
- a. as per the rules of Set, replace those 3 matching Set cards with new ones from the
- deck
  b. if the deck is empty then the space vacated by the matched cards (which cannot be
  replaced since there are no more cards) should be made available to the remaining
  cards (i.e. which may well then get bigger)
- 
- 
- 2. When any card is touched and there are already 3 non-matching Set cards selected,
- deselect those 3 non-matching cards and select the touched-on card (whether or not it
- was part of the non-matching trio of cards).
- 
- 
- 3. You will need to have a “Deal 3 More Cards” button (per the rules of Set).
- c. disable this button if the deck is empty
 */
 
 
@@ -32,6 +21,13 @@ class SetViewModel: ObservableObject {
     
     @Published var cardsToShow: [CardModel] = []
     var cardDeck = CardDeck()
+    var isButtonDisabled: Bool {
+        if cardDeck.cards.count == 0 || cardDeck.cards.count == 81 {
+            return true
+        } else {
+            return false
+        }
+    }
     
     private func dealThreeCards() -> [CardModel] {
         var threeCards:[CardModel] = []
@@ -175,10 +171,10 @@ class SetViewModel: ObservableObject {
         let numberOfUniqueColours = Set(colours).count
         let numberOfUniqueShading = Set(shading).count
         
-        if (numberOfUniqueShapes == 1 || numberOfUniqueShapes == 3) 
-//            (numberOfUniqueNumberOfShapes == 1 || numberOfUniqueNumberOfShapes == 3) &&
-//            (numberOfUniqueColours == 1 || numberOfUniqueColours == 3)
-//            (numberOfUniqueShading == 1 || numberOfUniqueShading == 3)
+        if (numberOfUniqueShapes == 1 || numberOfUniqueShapes == 3) &&
+            (numberOfUniqueNumberOfShapes == 1 || numberOfUniqueNumberOfShapes == 3) &&
+            (numberOfUniqueColours == 1 || numberOfUniqueColours == 3) &&
+            (numberOfUniqueShading == 1 || numberOfUniqueShading == 3)
         {
             return true
         }
@@ -201,8 +197,6 @@ class SetViewModel: ObservableObject {
         }
         return result
     }
-    
-    
 }
 
 
