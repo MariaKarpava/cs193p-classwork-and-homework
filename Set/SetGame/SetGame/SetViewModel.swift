@@ -6,6 +6,25 @@
 //
 
 import Foundation
+/*
+TODO:
+ 1. When any card is touched on and there are already 3 matching Set cards selected,
+ then …
+ a. as per the rules of Set, replace those 3 matching Set cards with new ones from the
+ deck
+ b. if the deck is empty then the space vacated by the matched cards (which cannot be
+ replaced since there are no more cards) should be made available to the remaining
+ cards (i.e. which may well then get bigger)
+ 
+ 
+ 2. When any card is touched and there are already 3 non-matching Set cards selected,
+ deselect those 3 non-matching cards and select the touched-on card (whether or not it
+ was part of the non-matching trio of cards).
+ 
+ 
+ 3. You will need to have a “Deal 3 More Cards” button (per the rules of Set).
+ c. disable this button if the deck is empty
+*/
 
 
 // TODO: restrict access as much as possible to members
@@ -14,7 +33,6 @@ class SetViewModel: ObservableObject {
     @Published var cardsToShow: [CardModel] = []
     var cardDeck = CardDeck()
     
-
     private func dealThreeCards() -> [CardModel] {
         var threeCards:[CardModel] = []
         
@@ -28,7 +46,7 @@ class SetViewModel: ObservableObject {
     }
         
     func onDealCardsTapped() {
-        let newThreeCards = dealThreeCards()
+        var newThreeCards = dealThreeCards()
         if cardsToShow.count + newThreeCards.count > 81 {
             return
         }
@@ -37,36 +55,15 @@ class SetViewModel: ObservableObject {
         // else - add 3 new cards to the end
         let selectedCards = cardsToShow.filter { $0.isSelected }
         if isSet(selectedCards: selectedCards) {
-            var indexesOfSelectedCards = [Int]()
-
-            for (index, card) in cardsToShow.enumerated() {
-                if card.isSelected {
-                    indexesOfSelectedCards.append(index)
-                }
-            }
-            
-            for i in 0..<cardsToShow.count {
-                for j in 0..<selectedCards.count {
-                    if cardsToShow[i] == selectedCards[j] {
-                        cardsToShow[i] = newThreeCards[j]
-                    }
+            for (i, card) in cardsToShow.enumerated() where card.isSelected {
+                if let last = newThreeCards.last {
+                    cardsToShow[i] = last
+                    newThreeCards.removeLast()
                 }
             }
         } else {
-            cardsToShow.append(contentsOf: newThreeCards)
+            cardsToShow += newThreeCards
         }
-        /*
-        Simpler version of the same code:
-         let selectedCards = cardsToShow.filter(\.isSelected)
-
-         if isSet(selectedCards: selectedCards) {
-             for (index, card) in cardsToShow.enumerated() where card.isSelected {
-                 cardsToShow[index] = newThreeCards[selectedCards.firstIndex(of: card)!]
-             }
-         } else {
-             cardsToShow += newThreeCards
-         }
-         */
     }
     
     func onNewGameTapped() {
@@ -94,7 +91,9 @@ class SetViewModel: ObservableObject {
         cardsToShow[selectedCardIndex].isSelected = true
         
         let numberOfSelectedCards = cardsToShow.filter { $0.isSelected }.count
-        let selectedCards = cardsToShow.filter { $0.isSelected }
+        var selectedCards = cardsToShow.filter { $0.isSelected }
+        
+        
         
         if numberOfSelectedCards == 1 || numberOfSelectedCards == 2 {
             // change matching state the selected card to unknown
@@ -109,6 +108,8 @@ class SetViewModel: ObservableObject {
                         cardsToShow[i].matchingState = .success
                     }
                 }
+                
+                
             } else {
                 for i in 0..<cardsToShow.count {
                     if cardsToShow[i].isSelected {
@@ -119,7 +120,11 @@ class SetViewModel: ObservableObject {
         }
             
         if numberOfSelectedCards == 4 {
-//            replaceThreeMatchedCards()
+            cardsToShow[selectedCardIndex].isSelected = false
+            selectedCards = cardsToShow.filter { $0.isSelected }
+            print("numberOfSelectedCards% \(numberOfSelectedCards)")
+            
+            replaceThreeMatchedCards()
             deselect()
             cardsToShow[selectedCardIndex].isSelected = true
         }
@@ -134,16 +139,17 @@ class SetViewModel: ObservableObject {
     }
     
     private func replaceThreeMatchedCards() {
-        let newThreeCards = dealThreeCards()
+        var newThreeCards = dealThreeCards()
         if cardsToShow.count + newThreeCards.count > 81 {
             return
         }
-        
-        let selectedCards = cardsToShow.filter(\.isSelected)
-
+        let selectedCards = cardsToShow.filter { $0.isSelected }
         if isSet(selectedCards: selectedCards) {
-            for (index, card) in cardsToShow.enumerated() where card.isSelected {
-                cardsToShow[index] = newThreeCards[selectedCards.firstIndex(of: card)!]
+            for (i, card) in cardsToShow.enumerated() where card.isSelected {
+                if let last = newThreeCards.last {
+                    cardsToShow[i] = last
+                    newThreeCards.removeLast()
+                }
             }
         }
     }

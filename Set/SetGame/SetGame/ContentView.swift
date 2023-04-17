@@ -105,7 +105,7 @@ struct CardView: View {
         GeometryReader { geometry in
             ZStack{
                 let shape = RoundedRectangle(cornerRadius: 10)
-                shape.stroke(highlightColour(), lineWidth: 5)
+                shape.stroke(highlightColour(), lineWidth: 10)
                 
                 shape.foregroundColor(.white)
                 
