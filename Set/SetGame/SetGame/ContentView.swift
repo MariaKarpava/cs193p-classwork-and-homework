@@ -13,9 +13,12 @@ struct ContentView: View {
     
     @Namespace private var dealingNamespace
     
+    @State private var shouldBeDisplayedInGrid: Set<Int> = Set<Int>()
+    
     var deckView: some View {
         ZStack {
             ForEach(Array(viewModel.cardDeck.cards)) { card in
+                // TODO: ???
                 CardView(card: card, viewModel: viewModel)
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
             }
@@ -28,9 +31,11 @@ struct ContentView: View {
     var body: some View {
         VStack {
             AspectVGrid(items: viewModel.cardsToShow, aspectRatio: 2/3, minWidth: 80) { card in
-                CardView(card: card, viewModel: viewModel)
-                    .matchedGeometryEffect(id: card.id, in: dealingNamespace)
-                    .padding(4)
+                if shouldBeDisplayedInGrid.contains(card.id) {
+                    CardView(card: card, viewModel: viewModel)
+                        .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+                        .padding(4)
+                }
             }
             Spacer()
             deckView
@@ -40,6 +45,7 @@ struct ContentView: View {
                     withAnimation {
                         viewModel.onDealCardsTapped()
                     }
+                    allowCardsToBeDisplayedOneByOne()
                 } label: {
                     Text("Deal Three More Cards")
                         .padding()
@@ -54,6 +60,7 @@ struct ContentView: View {
                     withAnimation {
                         viewModel.onNewGameTapped()
                     }
+                    allowCardsToBeDisplayedOneByOne()
                 } label: {
                     Text("New Game")
                         .padding()
@@ -67,6 +74,17 @@ struct ContentView: View {
             
             Spacer()
             
+        }
+    }
+    
+    private func allowCardsToBeDisplayedOneByOne() {
+        var delay = 0.0
+        for c in viewModel.cardsToShow {
+            if shouldBeDisplayedInGrid.contains(c.id) { continue }
+            withAnimation(.default.delay(delay)) {
+                _ = shouldBeDisplayedInGrid.insert(c.id)
+            }
+            delay += 0.1
         }
     }
 }
