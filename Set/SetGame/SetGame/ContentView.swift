@@ -20,7 +20,9 @@ struct ContentView: View {
             
             HStack {
                 Button {
-                    viewModel.onDealCardsTapped()
+                    withAnimation {
+                        viewModel.onDealCardsTapped()
+                    }
                 } label: {
                     Text("Deal Three More Cards")
                         .padding()
@@ -32,7 +34,9 @@ struct ContentView: View {
                     .opacity(viewModel.isButtonDisabled ? 0.6 : 1)
                 
                 Button {
-                    viewModel.onNewGameTapped()
+                    withAnimation {
+                        viewModel.onNewGameTapped()
+                    }
                 } label: {
                     Text("New Game")
                         .padding()
