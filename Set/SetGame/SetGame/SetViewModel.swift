@@ -68,9 +68,32 @@ class SetViewModel: ObservableObject {
         cardsToShow.forEach { cardDeck.cards.remove($0) }
     }
     
+    /*
+     
+       stack 1    stack 2
+     A:  []       [1 2 3]
+     B:  [3]      [1 2]
+     
+     Animate A -> B
+        1). create new CardView for id 3 and add to stack 1
+        2). delete CardView with id 3 from stack 2
+        Note: given matchedGeometryEffect is configured on both views and ids match and namespace match => apply "fly" animation
     
+     */
+    
+    
+    /*
+     
+       stack 1    stack 2
+     A:  []       [a b c]
+     B:  [z]      [x y]
+     
+     Animate A -> B
+        - ids don't match! not "fly" :(
+     
+     */
   
-    func onCardSelected(cardId: UUID) {
+    func onCardSelected(cardId: Int) {
         guard let selectedCardIndex = cardsToShow.firstIndex(where: { $0.id == cardId }) else {
             return
         }

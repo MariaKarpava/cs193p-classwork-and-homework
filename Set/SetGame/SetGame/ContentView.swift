@@ -11,13 +11,30 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel: SetViewModel = SetViewModel()
     
+    @Namespace private var dealingNamespace
+    
+    var deckView: some View {
+        ZStack {
+            ForEach(Array(viewModel.cardDeck.cards)) { card in
+                CardView(card: card, viewModel: viewModel)
+                    .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+            }
+        }
+        .frame(width: 90 * 2/3, height: 90)
+        .foregroundColor(Color.red)
+    }
+    
+    
     var body: some View {
         VStack {
             AspectVGrid(items: viewModel.cardsToShow, aspectRatio: 2/3, minWidth: 80) { card in
                 CardView(card: card, viewModel: viewModel)
+                    .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                     .padding(4)
             }
-            
+            Spacer()
+            deckView
+            Spacer()
             HStack {
                 Button {
                     withAnimation {
@@ -44,8 +61,9 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .cornerRadius(5)
                 }.padding(.top)
-
             }
+            
+            
             
             Spacer()
             
@@ -59,8 +77,8 @@ struct ContentView: View {
 struct CardView: View {
     let card: CardModel
     let viewModel: SetViewModel
-    
-    
+
+
     func mapColour() -> Color {
         var colour = Color.red
         switch card.colours {
@@ -138,7 +156,6 @@ struct CardView: View {
                 viewModel.onCardSelected(cardId: card.id)
             }
         }
-            
     }
 }
  

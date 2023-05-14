@@ -27,7 +27,7 @@ struct CardModel: Identifiable, Hashable {
     let colours: String
     let shading: String
     
-    let id = UUID()
+    let id: Int
 }
 
 
@@ -42,12 +42,14 @@ struct CardDeck {
         let colours = ["red", "green", "purple"]
         let shading = ["solid", "semi-transparent", "outlined"]
     
+        var counter = 0
         
         for shape in shapes {
             for number in numberOfShapes {
                 for colour in colours {
                     for shade in shading {
-                        let card = CardModel(shapes: shape, numberOfShapes: number, colours: colour, shading: shade)
+                        counter += 1
+                        let card = CardModel(shapes: shape, numberOfShapes: number, colours: colour, shading: shade, id: counter)
                         allCards.append(card)
                     }
                 }
