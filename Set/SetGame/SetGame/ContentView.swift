@@ -57,7 +57,6 @@ struct CardView: View {
     let viewModel: SetViewModel
     
     
-    
     func mapColour() -> Color {
         var colour = Color.red
         switch card.colours {
@@ -102,10 +101,10 @@ struct CardView: View {
         return result
     }
     
-    
+
     var body: some View {
         GeometryReader { geometry in
-            ZStack{
+            ZStack {
                 let shape = RoundedRectangle(cornerRadius: 10)
                 shape.stroke(highlightColour(), lineWidth: 6)
                 
@@ -113,7 +112,7 @@ struct CardView: View {
                 
                 VStack{
                     ForEach(0..<card.numberOfShapes, id: \.self) { _ in
-                       
+                        
                         Group {
                             if card.shapes == "diamond" {
                                 Diamond(colour: self.mapColour(), opacity: self.mapShading())
@@ -123,14 +122,22 @@ struct CardView: View {
                                 Square(colour: self.mapColour(), opacity: self.mapShading())
                             }
                         }.frame(width: geometry.size.width*0.3, height: geometry.size.width*0.3)
+                        
                     }
                 }
-            }.onTapGesture {
+                
+            }.rotation3DEffect(
+                Angle.degrees(card.spin ? 360 : 0),
+                axis: (0, 1, 0)
+            ).animation(.linear(duration: 2.0).repeatForever(autoreverses: false), value: card.spin)
+            .onTapGesture {
                 viewModel.onCardSelected(cardId: card.id)
             }
         }
+            
     }
 }
+ 
 
 
 

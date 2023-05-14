@@ -12,6 +12,10 @@ struct CardModel: Identifiable, Hashable {
     var isSelected = false
     var matchingState: MatchingStates = .unknown
     
+    var spin: Bool {
+        return isSelected && matchingState == .success
+    }
+    
     enum MatchingStates {
         case success
         case notSuccess
