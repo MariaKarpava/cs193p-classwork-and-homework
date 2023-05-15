@@ -25,6 +25,12 @@ struct ContentView: View {
         }
         .frame(width: 90 * 2/3, height: 90)
         .foregroundColor(Color.red)
+        .onTapGesture {
+            withAnimation {
+                viewModel.onNewGameTapped()
+            }
+            allowCardsToBeDisplayedOneByOne()
+        }
     }
     
     
@@ -35,6 +41,9 @@ struct ContentView: View {
                     CardView(card: card, viewModel: viewModel)
                         .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                         .padding(4)
+                        .onTapGesture {
+                            viewModel.onCardSelected(cardId: card.id)
+                        }
                 }
             }
             Spacer()
@@ -55,7 +64,7 @@ struct ContentView: View {
                 }.padding(.top)
                     .disabled(viewModel.isButtonDisabled)
                     .opacity(viewModel.isButtonDisabled ? 0.6 : 1)
-                
+
                 Button {
                     withAnimation {
                         viewModel.onNewGameTapped()
@@ -84,7 +93,7 @@ struct ContentView: View {
             withAnimation(.default.delay(delay)) {
                 _ = shouldBeDisplayedInGrid.insert(c.id)
             }
-            delay += 0.1
+            delay += 0.3
         }
     }
 }
@@ -141,6 +150,17 @@ struct CardView: View {
         return result
     }
     
+    
+    
+    private func backgroundColour(for state: CardModel.MatchingStates) -> Color {
+        if state == .success {
+            return Color.green.opacity(0.1)
+        } else if state == .notSuccess {
+            return Color.red.opacity(0.1)
+        }
+        return Color.white
+    }
+    
 
     var body: some View {
         GeometryReader { geometry in
@@ -148,8 +168,11 @@ struct CardView: View {
                 let shape = RoundedRectangle(cornerRadius: 10)
                 shape.stroke(highlightColour(), lineWidth: 6)
                 
-                shape.foregroundColor(.white)
+                shape
+                    .foregroundColor(backgroundColour(for: card.matchingState))
+                    .animation(Animation.linear.speed(0.25), value: card.matchingState)
                 
+
                 VStack{
                     ForEach(0..<card.numberOfShapes, id: \.self) { _ in
                         
@@ -166,12 +189,6 @@ struct CardView: View {
                     }
                 }
                 
-            }.rotation3DEffect(
-                Angle.degrees(card.spin ? 360 : 0),
-                axis: (0, 1, 0)
-            ).animation(.linear(duration: 2.0).repeatForever(autoreverses: false), value: card.spin)
-            .onTapGesture {
-                viewModel.onCardSelected(cardId: card.id)
             }
         }
     }
