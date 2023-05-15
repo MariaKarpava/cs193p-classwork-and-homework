@@ -15,24 +15,34 @@ struct ContentView: View {
     
     @State private var shouldBeDisplayedInGrid: Set<Int> = Set<Int>()
     
+    private func cardsCurrentlyInDeck() -> [CardModel] {
+        let cardsInDeck = viewModel.cardDeck.cards
+            + viewModel.cardsToShow.reversed().filter { !shouldBeDisplayedInGrid.contains($0.id) }
+        return cardsInDeck
+    }
+    
     var deckView: some View {
         ZStack {
-            ForEach(Array(viewModel.cardDeck.cards)) { card in
-                // TODO: ???
+            ForEach(cardsCurrentlyInDeck()) { card in
                 CardView(card: card, viewModel: viewModel)
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+                    .zIndex(zIndex(of: card))
             }
         }
         .frame(width: 90 * 2/3, height: 90)
         .foregroundColor(Color.red)
         .onTapGesture {
             withAnimation {
-                viewModel.onNewGameTapped()
+                viewModel.onDealCardsTapped()
             }
             allowCardsToBeDisplayedOneByOne()
         }
     }
     
+    
+    private func zIndex(of card: CardModel) -> Double {
+        Double(cardsCurrentlyInDeck().firstIndex(where: { $0.id == card.id }) ?? 0)
+    }
     
     var body: some View {
         VStack {
@@ -41,31 +51,21 @@ struct ContentView: View {
                     CardView(card: card, viewModel: viewModel)
                         .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                         .padding(4)
+                        .zIndex(zIndex(of: card))
                         .onTapGesture {
                             viewModel.onCardSelected(cardId: card.id)
                         }
                 }
             }
-            Spacer()
-            deckView
+            if !viewModel.isButtonDisabled {
+                Spacer()
+                deckView
+            }
             Spacer()
             HStack {
-                Button {
-                    withAnimation {
-                        viewModel.onDealCardsTapped()
-                    }
-                    allowCardsToBeDisplayedOneByOne()
-                } label: {
-                    Text("Deal Three More Cards")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }.padding(.top)
-                    .disabled(viewModel.isButtonDisabled)
-                    .opacity(viewModel.isButtonDisabled ? 0.6 : 1)
 
                 Button {
+                    shouldBeDisplayedInGrid = Set()
                     withAnimation {
                         viewModel.onNewGameTapped()
                     }
@@ -93,7 +93,7 @@ struct ContentView: View {
             withAnimation(.default.delay(delay)) {
                 _ = shouldBeDisplayedInGrid.insert(c.id)
             }
-            delay += 0.3
+            delay += 0.1
         }
     }
 }

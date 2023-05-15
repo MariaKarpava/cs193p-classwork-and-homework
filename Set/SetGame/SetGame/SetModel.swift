@@ -30,7 +30,7 @@ struct CardModel: Identifiable, Hashable {
 
 
 struct CardDeck {
-    var cards = Set(Self.createCards())
+    var cards: [CardModel] = Self.createCards()
     
     static private func createCards() -> [CardModel] {
         var allCards:[CardModel] = []

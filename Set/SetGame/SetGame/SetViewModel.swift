@@ -35,7 +35,10 @@ class SetViewModel: ObservableObject {
         for _ in 0..<3 {
             if let randomCard = cardDeck.cards.randomElement() {
                 threeCards.append(randomCard)
-                cardDeck.cards.remove(randomCard)
+                
+                if let index = cardDeck.cards.firstIndex(where: { $0.id == randomCard.id }) {
+                    cardDeck.cards.remove(at: index)
+                }
             }
         }
         return threeCards
@@ -63,11 +66,19 @@ class SetViewModel: ObservableObject {
     }
     
     func onNewGameTapped() {
+        cardsToShow = []
         cardDeck = CardDeck()
-        cardsToShow = random(12, from: cardDeck.cards)
-        cardsToShow.forEach { cardDeck.cards.remove($0) }
+        cardDeck.cards.shuffle()
+
+        for _ in 0..<12 {
+            if let last = cardDeck.cards.last {
+                cardsToShow.append(last)
+                cardDeck.cards.removeLast()
+            }
+        }
     }
     
+
     /*
      
        stack 1    stack 2
@@ -207,17 +218,10 @@ class SetViewModel: ObservableObject {
     
     
     
-    private func random(_ count: Int, from cards: Set<CardModel>) -> [CardModel] {
+    private func random(_ count: Int, from cards: [CardModel]) -> [CardModel] {
         var localCards = cards
-        var result: [CardModel] = []
-        for _ in 1...count {
-            if let randomCard = localCards.randomElement() {
-                
-                result.append(randomCard)
-                localCards.remove(randomCard)
-            }
-            
-        }
+        localCards.shuffle()
+        let result = Array(localCards[0..<count])
         return result
     }
 }
