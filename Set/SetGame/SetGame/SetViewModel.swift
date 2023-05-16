@@ -20,7 +20,13 @@ TODO:
 class SetViewModel: ObservableObject {
     
     @Published var cardsToShow: [CardModel] = []
+    
+    @Published var discardPile: [CardModel] = []
+    
+    
+    
     var cardDeck = CardDeck()
+    
     var isButtonDisabled: Bool {
         if cardDeck.cards.count == 0 || cardDeck.cards.count == 81 {
             return true
@@ -113,6 +119,7 @@ class SetViewModel: ObservableObject {
         // Support “deselection” by touching already-selected cards (but only if there are 1 or 2
         // cards (not 3) currently selected).
         let selectedCard = cardsToShow[selectedCardIndex]
+        
         if selectedCard.isSelected && (cardsToShow.filter { $0.isSelected }.count < 3) {
             cardsToShow[selectedCardIndex].isSelected = false
             cardsToShow[selectedCardIndex].matchingState = .unknown
@@ -164,12 +171,27 @@ class SetViewModel: ObservableObject {
             cardsToShow[selectedCardIndex].isSelected = false
             selectedCards = cardsToShow.filter { $0.isSelected }
             
+            // if is Set - put these cards into discardPile
+            addSelectedCardsToDiscardPile(selectedCards: selectedCards)
+            
+            
             replaceThreeMatchedCards()
             deselect()
             cardsToShow[selectedCardIndex].isSelected = true
         }
     }
         
+    
+    func addSelectedCardsToDiscardPile(selectedCards: [CardModel]) {
+        if isSet(selectedCards: selectedCards) {
+            discardPile += selectedCards
+            for i in 0..<discardPile.count {
+                discardPile[i].matchingState = .unknown
+                discardPile[i].isSelected = false
+            }
+        }
+    }
+    
     
     private func deselect() {
         for index in 0..<cardsToShow.count {
