@@ -35,23 +35,19 @@ class SetViewModel: ObservableObject {
         }
     }
     
-    private func dealThreeCards() -> [CardModel] {
+    private func take3FromDeck() -> [CardModel] {
         var threeCards:[CardModel] = []
-        
         for _ in 0..<3 {
-            if let randomCard = cardDeck.cards.randomElement() {
-                threeCards.append(randomCard)
-                
-                if let index = cardDeck.cards.firstIndex(where: { $0.id == randomCard.id }) {
-                    cardDeck.cards.remove(at: index)
-                }
+            if let last = cardDeck.cards.last {
+                threeCards.append(last)
+                cardDeck.cards.removeLast()
             }
         }
         return threeCards
     }
         
     func onDealCardsTapped() {
-        var newThreeCards = dealThreeCards()
+        var newThreeCards = take3FromDeck()
         if cardsToShow.count + newThreeCards.count > 81 {
             return
         }
@@ -61,9 +57,9 @@ class SetViewModel: ObservableObject {
         let selectedCards = cardsToShow.filter { $0.isSelected }
         if isSet(selectedCards: selectedCards) {
             for (i, card) in cardsToShow.enumerated() where card.isSelected {
-                if let last = newThreeCards.last {
-                    cardsToShow[i] = last
-                    newThreeCards.removeLast()
+                if let first = newThreeCards.first {
+                    cardsToShow[i] = first
+                    newThreeCards.removeFirst()
                 }
             }
         } else {
@@ -201,7 +197,7 @@ class SetViewModel: ObservableObject {
     }
     
     private func replaceThreeMatchedCards() {
-        var newThreeCards = dealThreeCards()
+        var newThreeCards = take3FromDeck()
         if cardsToShow.count + newThreeCards.count > 81 {
             return
         }

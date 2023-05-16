@@ -79,6 +79,9 @@ struct ContentView: View {
                             allowCardsToBeDisplayedOneByOne()
                             allowCardsBeDiscardedOneByOne()
                         }
+                } else {
+                    // Even if we don't want to display a card based on its absence in shouldBeDisplayedInGrid, we still want to render the corresponding cell because, for ex, when 3 cards are being replaced, we never want the total count of cells being changed during this process.
+                    Color.white
                 }
             }
             if !viewModel.isButtonDisabled {
