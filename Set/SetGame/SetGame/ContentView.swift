@@ -24,34 +24,36 @@ struct ContentView: View {
         return cardsInDeck
     }
     
-    
+
     var deckView: some View {
         ZStack {
             ForEach(cardsCurrentlyInDeck()) { card in
-                CardView(card: card, viewModel: viewModel)
+                let shape = RoundedRectangle(cornerRadius: 10)
+                shape
+                    .foregroundColor(.red)
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                     .zIndex(zIndex(of: card))
             }
         }
         .frame(width: 90 * 2/3, height: 90)
-        .foregroundColor(Color.red)
         .onTapGesture {
             withAnimation {
                 viewModel.onDealCardsTapped()
             }
             allowCardsToBeDisplayedOneByOne()
+            allowCardsBeDiscardedOneByOne()
         }
     }
+    
     
 
     var DiscardPileView: some View {
         ZStack {
             ForEach(viewModel.discardPile) { card in
-                
                 if !shouldBeDisplayedInGrid.contains(card.id) {
                     CardView(card: card, viewModel: viewModel)
                         .matchedGeometryEffect(id: card.id, in: dealingNamespace)
-                        .zIndex(zIndex(of: card))
+                        .zIndex(zIndexForDiscardPile(of: card))
                 }
             }
         }
@@ -60,9 +62,15 @@ struct ContentView: View {
     }
     
     
+    
     private func zIndex(of card: CardModel) -> Double {
         Double(cardsCurrentlyInDeck().firstIndex(where: { $0.id == card.id }) ?? 0)
     }
+    
+    private func zIndexForDiscardPile(of card: CardModel) -> Double {
+        Double(viewModel.discardPile.firstIndex(where: { $0.id == card.id }) ?? 0)
+    }
+    
     
     var body: some View {
         VStack {
@@ -88,9 +96,9 @@ struct ContentView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    deckView
-                    Spacer()
                     DiscardPileView
+                    Spacer()
+                    deckView
                     Spacer()
                 }
             }
@@ -120,6 +128,13 @@ struct ContentView: View {
         }
     }
     
+//    private func delete3SelectedMatchedCards() -> Set<Int> {
+//        for c in viewModel.threeMatchedCards {
+//            shouldBeDisplayedInGrid.remove(c.id)
+//        }
+//        return shouldBeDisplayedInGrid
+//    }
+//
     
     private func allowCardsToBeDisplayedOneByOne() {
         var delay = 0.0
@@ -128,26 +143,21 @@ struct ContentView: View {
             withAnimation(.default.delay(delay)) {
                 _ = shouldBeDisplayedInGrid.insert(c.id)
             }
-            delay += 0.1
+            delay += 0.2
         }
     }
     
     
     private func allowCardsBeDiscardedOneByOne() {
-        // if card is not in cardsToShow -> delete from shouldBeDisplayedInGrid
-        var idsToRemove: [Int] = []
-        for id in shouldBeDisplayedInGrid {
-            if !viewModel.cardsToShow.contains(where: { $0.id == id }) {
-                idsToRemove.append(id)
-            }
-        }
-        
+        // delete cards that are in pile from shouldBeDisplayedInGrid
         var delay = 0.0
-        for id in idsToRemove {
-            withAnimation(.linear(duration: 1).delay(delay)) {
-                _ = shouldBeDisplayedInGrid.remove(id)
+        for c in viewModel.discardPile {
+            if shouldBeDisplayedInGrid.contains(c.id) {
+                withAnimation(.default.delay(delay)) {
+                    _ = shouldBeDisplayedInGrid.remove(c.id)
+                }
+                delay += 0.2
             }
-            delay += 1
         }
     }
 }

@@ -24,7 +24,6 @@ class SetViewModel: ObservableObject {
     @Published var discardPile: [CardModel] = []
     
     
-    
     var cardDeck = CardDeck()
     
     var isButtonDisabled: Bool {
@@ -57,10 +56,17 @@ class SetViewModel: ObservableObject {
         let selectedCards = cardsToShow.filter { $0.isSelected }
         if isSet(selectedCards: selectedCards) {
             for (i, card) in cardsToShow.enumerated() where card.isSelected {
+                discardPile.append(card)
+                
                 if let first = newThreeCards.first {
                     cardsToShow[i] = first
                     newThreeCards.removeFirst()
                 }
+            }
+            
+            for i in 0..<discardPile.count {
+                discardPile[i].matchingState = .unknown
+                discardPile[i].isSelected = false
             }
         } else {
             cardsToShow += newThreeCards
@@ -223,10 +229,10 @@ class SetViewModel: ObservableObject {
         let numberOfUniqueColours = Set(colours).count
         let numberOfUniqueShading = Set(shading).count
         
-        if (numberOfUniqueShapes == 1 || numberOfUniqueShapes == 3) &&
-            (numberOfUniqueNumberOfShapes == 1 || numberOfUniqueNumberOfShapes == 3) &&
-            (numberOfUniqueColours == 1 || numberOfUniqueColours == 3) &&
-            (numberOfUniqueShading == 1 || numberOfUniqueShading == 3)
+        if (numberOfUniqueShapes == 1 || numberOfUniqueShapes == 3) // &&
+//            (numberOfUniqueNumberOfShapes == 1 || numberOfUniqueNumberOfShapes == 3) &&
+//            (numberOfUniqueColours == 1 || numberOfUniqueColours == 3) &&
+//            (numberOfUniqueShading == 1 || numberOfUniqueShading == 3)
         {
             return true
         }
