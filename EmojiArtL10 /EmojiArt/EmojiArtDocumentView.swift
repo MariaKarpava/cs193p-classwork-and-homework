@@ -32,11 +32,15 @@ struct EmojiArtDocumentView: View {
                 if document.backgroundImageFetchStatus == .fetching {
                     ProgressView().scaleEffect(2)
                 } else {
+                    // these are emojis that I dropped on background
                     ForEach(document.emojis) { emoji in
                         Text(emoji.text)
                             .font(.system(size: fontSize(for: emoji)))
+                        // when zoom in background image - emoji also zooms in
                             .scaleEffect(zoomScale)
+                            .background(selectedEmojis.contains(emoji) ? Rectangle().fill(Color.blue).frame(width: 40, height: 40) : Rectangle().fill(Color.clear).frame(width: 40, height: 40))
                             .position(position(for: emoji, in: geometry))
+                            .gesture(toggleEmoji(emoji))       
                     }
                 }
             }
@@ -47,6 +51,17 @@ struct EmojiArtDocumentView: View {
             .gesture(panGesture().simultaneously(with: zoomGesture()))
         }
     }
+    
+    
+    
+    // MARK: - Select Emoji
+    @State private var selectedEmojis: Set<EmojiArtModel.Emoji> = Set()
+    
+    private func toggleEmoji(_ emoji: EmojiArtModel.Emoji) -> some Gesture {
+        return TapGesture()
+            .onEnded { selectedEmojis.toggleMatching(element: emoji) }
+    }
+    
     
     // MARK: - Drag and Drop
     
@@ -183,8 +198,20 @@ struct ScrollingEmojisView: View {
     }
 }
 
+
+
+
+
+
+
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         EmojiArtDocumentView(document: EmojiArtDocument())
     }
 }
+
+
+
+
+
