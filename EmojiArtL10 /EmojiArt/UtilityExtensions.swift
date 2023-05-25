@@ -262,4 +262,9 @@ extension Set {
             self.insert(element)
         }
     }
+    
+    
+    mutating func emptySet() {
+        self.removeAll()
+    }
 }
