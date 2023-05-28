@@ -38,11 +38,15 @@ struct EmojiArtDocumentView: View {
                         Text(emoji.text)
                             .font(.system(size: fontSize(for: emoji)))
                         // when zoom in background image - emoji also zooms in
-                            .scaleEffect(zoomScale)
                             .background(selectedEmojis.contains(emoji) ? Rectangle().fill(Color.blue).frame(width: 40, height: 40) : Rectangle().fill(Color.clear).frame(width: 40, height: 40))
+                            .scaleEffect(zoomScale)
                             .position(position(for: emoji, in: geometry))
-                            .gesture(toggleEmojiGesture(emoji))
-                            .gesture(panEmojiGesture(for: emoji))
+//                            .gesture(toggleEmojiGesture(emoji).exclusively(before: deleteEmojiGesture(emoji)))
+                            .gesture(deleteEmojiGesture(emoji).exclusively(before: toggleEmojiGesture(emoji)))
+                            .gesture(selectedEmojis.contains(emoji) ? panEmojiGesture(for: emoji) : nil)
+                        
+//                            .gesture(toggleEmojiGesture(emoji).simultaneously(with: deleteEmojiGesture(emoji).simultaneously(with: selectedEmojis.contains(emoji) ? panEmojiGesture(for: emoji) : nil)))
+                        
                     }
                 }
             }
@@ -56,7 +60,8 @@ struct EmojiArtDocumentView: View {
     
     
     
-    // MARK: - Select Emoji
+    // MARK: - Select, deselect and delete Emoji
+    
     @State private var selectedEmojis: Set<EmojiArtModel.Emoji> = Set()
     
     private func toggleEmojiGesture(_ emoji: EmojiArtModel.Emoji) -> some Gesture {
@@ -69,6 +74,10 @@ struct EmojiArtDocumentView: View {
             .onEnded { selectedEmojis.removeAll() }
     }
     
+    private func deleteEmojiGesture(_ emoji: EmojiArtModel.Emoji) -> some Gesture {
+        return TapGesture(count: 2)
+            .onEnded { document.removeEmoji(emoji) }
+    }
     
     
     // MARK: - Drag and Drop
@@ -101,7 +110,11 @@ struct EmojiArtDocumentView: View {
     // MARK: - Positioning/Sizing Emoji
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
-        convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
+        if selectedEmojis.contains(emoji) {
+            return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry) + gestureEmojiPanOffset
+        } else {
+            return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
+        }
     }
     
     private func fontSize(for emoji: EmojiArtModel.Emoji) -> CGFloat {
@@ -173,15 +186,18 @@ struct EmojiArtDocumentView: View {
     @State private var steadyStatePanOffset: CGSize = CGSize.zero
     
     // Only exists when gesture is going on, all other times it is 0.
-    // It can be a tuple or struct.
+    // It also can be a tuple or struct.
     // Every time sth changes(how far the finger has moved), we can update this value.
+    // This is Delta of the offset (for ex. finger moved one pixel left and five pixels right).
+    // Hence, this is not enough to calculate the position of the object.
     @GestureState private var gesturePanOffset: CGSize = CGSize.zero
-    @GestureState private var gestureEmojiPanOffset: CGSize = CGSize.zero
-    
+   
+    // But this IS enough to calculate the real-time position of the object even during a gesture.
     private var panOffset: CGSize {
         // you can find + function in the file with extensions
         (steadyStatePanOffset + gesturePanOffset) * zoomScale
     }
+    
     
     private func panGesture() -> some Gesture {
         DragGesture()
@@ -189,7 +205,7 @@ struct EmojiArtDocumentView: View {
                 gesturePanOffset = latestDragGestureValue.translation / zoomScale
             }
         
-        // finalDragGestureValue this is a value struct
+        // finalDragGestureValue - this is a value struct
         // var translation: CGSize - The total translation from the start of the drag gesture to the current event of the drag gesture.
         // (width and height since the start of the gesture)
             .onEnded { finalDragGestureValue in
@@ -197,7 +213,9 @@ struct EmojiArtDocumentView: View {
             }
     }
     
- 
+//    @State private var steadyStateEmojiPanOffset: CGSize = CGSize.zero
+    @GestureState private var gestureEmojiPanOffset: CGSize = CGSize.zero
+    
     private func panEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
         DragGesture()
         // this is called repeatedly when fingers move
@@ -205,14 +223,13 @@ struct EmojiArtDocumentView: View {
         // gestureEmojiPanOffset - inout parameter that lets us modify @GestureState gestureEmojiPanOffset
             .updating($gestureEmojiPanOffset) { latestDragGestureValue, gestureEmojiPanOffset, _ in
                 gestureEmojiPanOffset = latestDragGestureValue.translation / zoomScale
-                
+//                print("gestureEmojiPanOffset: \(gestureEmojiPanOffset)")
             }
             .onEnded { finalDragGestureValue in
                 for emoji in selectedEmojis {
-                    // you can find .distance in the extension to DragGesture.Value. in UtilityExtensions.swift
-                    // we ask VM to change our emojis location in model
-                    document.moveEmoji(emoji, by: finalDragGestureValue.distance / zoomScale)
+                    document.moveEmoji(emoji, by: finalDragGestureValue.translation / zoomScale)
                 }
+//                steadyStateEmojiPanOffset = steadyStateEmojiPanOffset + (finalDragGestureValue.translation)
             }
     }
 
