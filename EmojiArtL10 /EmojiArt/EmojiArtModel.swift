@@ -36,4 +36,5 @@ struct EmojiArtModel {
         uniqueEmojiId += 1
         emojis.append(Emoji(text: text, x: location.x, y: location.y, size: size, id: uniqueEmojiId))
     }
+    
 }

@@ -57,18 +57,7 @@ extension RangeReplaceableCollection where Element: Identifiable {
     }
 }
 
-// if you use a Set to represent the selection of emoji in HW5
-// then you might find this syntactic sugar function to be of use
 
-extension Set where Element: Identifiable {
-    mutating func toggleMembership(of element: Element) {
-        if let index = index(matching: element) {
-            remove(at: index)
-        } else {
-            insert(element)
-        }
-    }
-}
 
 // some extensions to String and Character
 // to help us with managing our Strings of emojis
@@ -254,17 +243,32 @@ extension Array where Element == NSItemProvider {
 }
 
 
-extension Set {
-    mutating func toggleMatching(element: Element) {
-        if self.contains(element) {
-            self.remove(element)
+//extension Set {
+//    mutating func toggleMatching(element: Element) {
+//        if self.contains(element) {
+//            self.remove(element)
+//        } else {
+//            self.insert(element)
+//        }
+//    }
+//}
+
+// if you use a Set to represent the selection of emoji in HW5
+// then you might find this syntactic sugar function to be of use
+extension Set where Element: Identifiable {
+    mutating func toggleMembership(of element: Element) {
+        if let index = index(matching: element) {
+            remove(at: index)
         } else {
-            self.insert(element)
+            insert(element)
         }
     }
     
-    
-    mutating func emptySet() {
-        self.removeAll()
+    func containsEmoji(_ emoji: Element) -> Bool {
+        if let _ = index(matching: emoji) {
+            return true
+        } else {
+            return false
+        }
     }
 }

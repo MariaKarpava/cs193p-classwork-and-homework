@@ -38,15 +38,19 @@ struct EmojiArtDocumentView: View {
                         Text(emoji.text)
                             .font(.system(size: fontSize(for: emoji)))
                         // when zoom in background image - emoji also zooms in
-                            .background(selectedEmojis.contains(emoji) ? Rectangle().fill(Color.blue).frame(width: 40, height: 40) : Rectangle().fill(Color.clear).frame(width: 40, height: 40))
+                            .background(selectedEmojis.containsEmoji(emoji) ? Rectangle().fill(Color.blue).frame(width: 40, height: 40) : Rectangle().fill(Color.clear).frame(width: 40, height: 40))
                             .scaleEffect(zoomScale)
                             .position(position(for: emoji, in: geometry))
-//                            .gesture(toggleEmojiGesture(emoji).exclusively(before: deleteEmojiGesture(emoji)))
-                            .gesture(deleteEmojiGesture(emoji).exclusively(before: toggleEmojiGesture(emoji)))
-                            .gesture(selectedEmojis.contains(emoji) ? panEmojiGesture(for: emoji) : nil)
                         
-//                            .gesture(toggleEmojiGesture(emoji).simultaneously(with: deleteEmojiGesture(emoji).simultaneously(with: selectedEmojis.contains(emoji) ? panEmojiGesture(for: emoji) : nil)))
-                        
+                            .gesture(deleteEmojiGesture(emoji)
+                                .exclusively(before: toggleEmojiGesture(emoji)
+                                    .exclusively(before:
+                                                    selectedEmojis.containsEmoji(emoji)
+                                                        ? panEmojiGesture(for: emoji)
+                                                        : nil
+                                                )
+                                )
+                            )
                     }
                 }
             }
@@ -66,7 +70,9 @@ struct EmojiArtDocumentView: View {
     
     private func toggleEmojiGesture(_ emoji: EmojiArtModel.Emoji) -> some Gesture {
         return TapGesture()
-            .onEnded { selectedEmojis.toggleMatching(element: emoji) }
+            .onEnded {
+                print("toggleEmojiGesture")
+                selectedEmojis.toggleMembership(of: emoji) }
     }
     
     private func deselectAllEmojisGesture() -> some Gesture {
@@ -110,8 +116,8 @@ struct EmojiArtDocumentView: View {
     // MARK: - Positioning/Sizing Emoji
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
-        if selectedEmojis.contains(emoji) {
-            return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry) + gestureEmojiPanOffset
+        if selectedEmojis.containsEmoji(emoji) {
+            return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry) + gestureEmojiPanOffset * zoomScale
         } else {
             return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
         }
@@ -138,6 +144,7 @@ struct EmojiArtDocumentView: View {
         )
     }
     
+    
     // MARK: - Zooming
     
     // Zoom scale when Im not gesturing in a steady state of this app.
@@ -146,12 +153,18 @@ struct EmojiArtDocumentView: View {
     @GestureState private var gestureZoomScale: CGFloat = 1
     
     private var zoomScale: CGFloat {
-        steadyStateZoomScale * gestureZoomScale
+        let s = steadyStateZoomScale * gestureZoomScale
+//        print("S: \(s)")
+        return s
     }
     
     private func zoomGesture() -> some Gesture {
         // Magnification gestures allows users to zoom in and pan the whole screen.
-        // A pan gesture occurs any time a person moves one or more fingers around the screen.
+        
+        // if set is empty -
+        // else - do sth different
+        // 
+        
         MagnificationGesture()
             .updating($gestureZoomScale) { latestGestureScale, gestureZoomScale, _ in
                 gestureZoomScale = latestGestureScale
@@ -213,7 +226,8 @@ struct EmojiArtDocumentView: View {
             }
     }
     
-//    @State private var steadyStateEmojiPanOffset: CGSize = CGSize.zero
+
+
     @GestureState private var gestureEmojiPanOffset: CGSize = CGSize.zero
     
     private func panEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
@@ -226,10 +240,11 @@ struct EmojiArtDocumentView: View {
 //                print("gestureEmojiPanOffset: \(gestureEmojiPanOffset)")
             }
             .onEnded { finalDragGestureValue in
+                
                 for emoji in selectedEmojis {
+                    print("onEnd: document.moveEmoji \(emoji.text)")
                     document.moveEmoji(emoji, by: finalDragGestureValue.translation / zoomScale)
                 }
-//                steadyStateEmojiPanOffset = steadyStateEmojiPanOffset + (finalDragGestureValue.translation)
             }
     }
 
