@@ -37,8 +37,9 @@ struct EmojiArtDocumentView: View {
                     ForEach(document.emojis) { emoji in
                         Text(emoji.text)
                             .font(.system(size: fontSize(for: emoji)))
+                            .background(selectedEmojis.containsEmoji(emoji) ? Rectangle().fill(Color.blue) : Rectangle().fill(Color.clear))
                         // when zoom in background image - emoji also zooms in
-                            .background(selectedEmojis.containsEmoji(emoji) ? Rectangle().fill(Color.blue).frame(width: 40, height: 40) : Rectangle().fill(Color.clear).frame(width: 40, height: 40))
+                            
                             .scaleEffect(zoomScale)
                             .position(position(for: emoji, in: geometry))
                         
@@ -116,15 +117,13 @@ struct EmojiArtDocumentView: View {
     // MARK: - Positioning/Sizing Emoji
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
-        if selectedEmojis.containsEmoji(emoji) {
-            return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry) + gestureEmojiPanOffset * zoomScale
-        } else {
-            return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
-        }
+        let delta = selectedEmojis.containsEmoji(emoji) ? gestureEmojiPanOffset * zoomScale : CGSize.zero
+        return convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry) + delta
     }
     
     private func fontSize(for emoji: EmojiArtModel.Emoji) -> CGFloat {
-        CGFloat(emoji.size)
+        let multiplier = selectedEmojis.containsEmoji(emoji) ? zoomEmojiScale : 1
+        return CGFloat(emoji.size) * multiplier
     }
     
     private func convertToEmojiCoordinates(_ location: CGPoint, in geometry: GeometryProxy) -> (x: Int, y: Int) {
@@ -152,27 +151,43 @@ struct EmojiArtDocumentView: View {
     @State private var steadyStateZoomScale: CGFloat = 1
     @GestureState private var gestureZoomScale: CGFloat = 1
     
+    @GestureState private var gestureEmojiZoomScale: CGFloat = 1
+    
     private var zoomScale: CGFloat {
-        let s = steadyStateZoomScale * gestureZoomScale
-//        print("S: \(s)")
-        return s
+        steadyStateZoomScale * gestureZoomScale
+    }
+    
+    private var zoomEmojiScale: CGFloat {
+        gestureEmojiZoomScale
     }
     
     private func zoomGesture() -> some Gesture {
         // Magnification gestures allows users to zoom in and pan the whole screen.
         
-        // if set is empty -
-        // else - do sth different
-        // 
+        // if set is empty - do current code
+        // else - do sth different:
+        //      change emojis size. onEnd - VM.cscaleEmoji for all emojis in set
+        if selectedEmojis.isEmpty {
+            return MagnificationGesture()
+                .updating($gestureZoomScale) { latestGestureScale, gestureZoomScale, _ in
+                    gestureZoomScale = latestGestureScale
+                }
+            // gestureScaleAtEnd - how far the fingers are apart compared to what they started.
+                .onEnded { gestureScaleAtEnd in
+                    steadyStateZoomScale *= gestureScaleAtEnd
+                }
+        } else {
+            return MagnificationGesture()
+                .updating($gestureEmojiZoomScale) { latestGestureScale, gestureEmojiZoomScale, _ in
+                    gestureEmojiZoomScale = latestGestureScale
+                }
+                .onEnded { gestureScaleAtEnd in
+                    for emoji in selectedEmojis {
+                        document.scaleEmoji(emoji, by: gestureScaleAtEnd)
+                    }
+                }
+        }
         
-        MagnificationGesture()
-            .updating($gestureZoomScale) { latestGestureScale, gestureZoomScale, _ in
-                gestureZoomScale = latestGestureScale
-            }
-        // gestureScaleAtEnd - how fat the fingers are apart compared to what they started.
-            .onEnded { gestureScaleAtEnd in
-                steadyStateZoomScale *= gestureScaleAtEnd
-            }
     }
     
     private func doubleTapToZoom(in size: CGSize) -> some Gesture {
