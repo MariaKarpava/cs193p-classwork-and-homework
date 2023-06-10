@@ -50,7 +50,7 @@ struct ThemeChooserView: View {
             NavigationView {
                 List {
                     ForEach(store.themes) { theme in
-                        NavigationLink(destination: ContentView(viewModel: EmojiMemoryGame())) {
+                        NavigationLink(destination: ContentView(viewModel: EmojiMemoryGame(theme: theme))) {
                             VStack(alignment: .leading) {
                                 Text(theme.name)
                                 Text(theme.emojis.joined())
