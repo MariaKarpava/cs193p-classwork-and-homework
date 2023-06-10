@@ -9,15 +9,15 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
     private var theme: Theme
-    
+//     let chosenTheme: Theme
     
     static var themes: Array<Theme> = [
-        Theme(name: "Animals", colour: "green", emojis: ["🐶", "🐭", "🦊", "🐻", "🐼", "🐸", "🐵", "🐥", "🦄", "🐰", "🐷", "🐴", "🦉", "🐱", "🐹", "🐻‍❄️", "🐨", "🐤", "🦁", "🐒", "🦋", "🐺"]),
-        Theme(name: "Vehicles", colour: "red", emojis: ["✈️", "🚁", "🚘", "🚃", "🚇"]),
-        Theme(name: "House", colour: "blue", emojis: ["🛁", "🛏️", "🔑", "🪑", "🧸", "🖼️", "🪞", "🚽", "🛋️"], numberOfPairsOfCardsToShow: 9),
-        Theme(name: "Body", colour: "yellow", emojis: ["🦶🏻", "🦵", "🦷", "👅", "👄", "👂", "👃", "👁️", "🫀"], numberOfPairsOfCardsToShow: 9),
-        Theme(name: "Clothes", colour: "brown", emojis: ["👕", "👖", "👗", "🩱", "👘", "👠", "🥾", "👒", "👙"], numberOfPairsOfCardsToShow: 9),
-        Theme(name: "Fruits", colour: "orange", emojis: ["🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐"], numberOfPairsOfCardsToShow: 9)
+//        Theme(name: "Animals", colour: "green", emojis: ["🐶", "🐭", "🦊", "🐻", "🐼", "🐸", "🐵", "🐥", "🦄", "🐰", "🐷", "🐴", "🦉", "🐱", "🐹", "🐻‍❄️", "🐨", "🐤", "🦁", "🐒", "🦋", "🐺"]),
+//        Theme(name: "Vehicles", colour: "red", emojis: ["✈️", "🚁", "🚘", "🚃", "🚇"]),
+//        Theme(name: "House", colour: "blue", emojis: ["🛁", "🛏️", "🔑", "🪑", "🧸", "🖼️", "🪞", "🚽", "🛋️"], numberOfPairsOfCardsToShow: 9),
+//        Theme(name: "Body", colour: "yellow", emojis: ["🦶🏻", "🦵", "🦷", "👅", "👄", "👂", "👃", "👁️", "🫀"], numberOfPairsOfCardsToShow: 9),
+        Theme(name: "Clothes", colour: "brown", emojis: ["👕", "👖", "👗", "🩱", "👘", "👠", "🥾", "👒", "👙"], numberOfPairsOfCardsToShow: 9, id: 5),
+        Theme(name: "Fruits", colour: "orange", emojis: ["🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐"], numberOfPairsOfCardsToShow: 9, id: 6)
     ]
     
     var themeName: String {
