@@ -30,7 +30,7 @@ class EmojiMemoryGame: ObservableObject {
     
     
     var themeColour: Color {
-        theme.uiColour
+        Color(rgbaColor: theme.colour)
     }
     
     

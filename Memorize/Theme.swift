@@ -9,16 +9,22 @@ import Foundation
 
 struct Theme: Identifiable, Hashable {
     var name: String
-    var colour: String
+    var colour: RGBAColor
     var emojis: Array<String>
     var numberOfPairsOfCardsToShow: Int
     let id: Int
 
     
 
+    struct RGBAColor: Codable, Equatable, Hashable {
+     let red: Double
+     let green: Double
+     let blue: Double
+     let alpha: Double
+    }
     
     
-    init(name: String, colour: String, emojis: Array<String>, numberOfPairsOfCardsToShow: Int, id: Int) {
+    init(name: String, colour: RGBAColor, emojis: Array<String>, numberOfPairsOfCardsToShow: Int, id: Int) {
         self.name = name
         self.colour = colour
         self.emojis = emojis

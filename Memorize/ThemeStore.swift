@@ -20,7 +20,7 @@ class ThemeStore: ObservableObject {
         
         Theme(
             name: "House",
-            colour: "blue",
+            colour: Theme.RGBAColor(color: UIColor.green),
             emojis: ["🛁", "🛏️", "🔑", "🪑", "🧸", "🖼️", "🪞", "🚽", "🛋️"],
             numberOfPairsOfCardsToShow: 9,
             id: 3
@@ -28,7 +28,7 @@ class ThemeStore: ObservableObject {
         ),
         Theme(
             name: "Body",
-            colour: "yellow",
+            colour: Theme.RGBAColor(color: UIColor.yellow),
             emojis: ["🦶🏻", "🦵", "🦷", "👅", "👄", "👂", "👃", "👁️", "🫀"],
             numberOfPairsOfCardsToShow: 9,
             id: 4
@@ -36,7 +36,7 @@ class ThemeStore: ObservableObject {
         ),
         Theme(
             name: "Clothes",
-            colour: "brown",
+            colour: Theme.RGBAColor(color: UIColor.blue),
             emojis: ["👕", "👖", "👗", "🩱", "👘", "👠", "🥾", "👒", "👙"],
             numberOfPairsOfCardsToShow: 9,
             id: 5
@@ -44,7 +44,7 @@ class ThemeStore: ObservableObject {
         ),
         Theme(
             name: "Fruits",
-            colour: "orange",
+            colour: Theme.RGBAColor(color: UIColor.orange),
             emojis: ["🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐"],
             numberOfPairsOfCardsToShow: 9,
             id: 6
@@ -55,30 +55,6 @@ class ThemeStore: ObservableObject {
 }
 
 
-struct RGBAColor: Codable, Equatable, Hashable {
- let red: Double
- let green: Double
- let blue: Double
- let alpha: Double
-}
 
 
-extension Color {
- init(rgbaColor rgba: RGBAColor) {
- self.init(.sRGB, red: rgba.red, green: rgba.green, blue: rgba.blue, opacity: rgba.alpha)
- }
-}
 
-
-extension RGBAColor {
- init(color: Color) {
- var red: CGFloat = 0
- var green: CGFloat = 0
- var blue: CGFloat = 0
- var alpha: CGFloat = 0
- if let cgColor = color.cgColor {
- UIColor(cgColor: cgColor).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
- }
- self.init(red: Double(red), green: Double(green), blue: Double(blue), alpha: Double(alpha))
- }
-}
