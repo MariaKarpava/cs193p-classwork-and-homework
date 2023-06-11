@@ -52,7 +52,7 @@ struct ThemeChooserView: View {
                     ForEach(store.themes) { theme in
                         NavigationLink(destination: ContentView(viewModel: EmojiMemoryGame(theme: theme))) {
                             VStack(alignment: .leading) {
-                                Text(theme.name)
+                                Text(theme.name).foregroundColor(theme.uiColour)
                                 Text(theme.emojis.joined())
                             }
                             .lineLimit(1)
@@ -88,3 +88,6 @@ struct ThemeChooserView_Previews: PreviewProvider {
         ThemeChooserView()
     }
 }
+
+
+

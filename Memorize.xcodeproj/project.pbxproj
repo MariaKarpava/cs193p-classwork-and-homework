@@ -18,6 +18,7 @@
 		70B4C6582A30F0CF00DA265D /* ThemeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B4C6572A30F0CF00DA265D /* ThemeStore.swift */; };
 		70B4C65A2A31E82100DA265D /* ThemeChooserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B4C6592A31E82100DA265D /* ThemeChooserView.swift */; };
 		70B4C65C2A33501700DA265D /* ThemeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B4C65B2A33501700DA265D /* ThemeEditorView.swift */; };
+		70B4C65E2A35F40900DA265D /* MyExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B4C65D2A35F40900DA265D /* MyExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		70B4C6572A30F0CF00DA265D /* ThemeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeStore.swift; sourceTree = "<group>"; };
 		70B4C6592A31E82100DA265D /* ThemeChooserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeChooserView.swift; sourceTree = "<group>"; };
 		70B4C65B2A33501700DA265D /* ThemeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeEditorView.swift; sourceTree = "<group>"; };
+		70B4C65D2A35F40900DA265D /* MyExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyExtensions.swift; sourceTree = "<group>"; };
 		70D52CC229A5237E00510810 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,6 +76,7 @@
 				7069611D29B8D08300BB0C25 /* Theme.swift */,
 				70B4C6572A30F0CF00DA265D /* ThemeStore.swift */,
 				70B4C6592A31E82100DA265D /* ThemeChooserView.swift */,
+				70B4C65D2A35F40900DA265D /* MyExtensions.swift */,
 				70B4C65B2A33501700DA265D /* ThemeEditorView.swift */,
 				7002D5AF29A3E2BD00891836 /* MemorizeApp.swift */,
 				7002D5B129A3E2BD00891836 /* ContentView.swift */,
@@ -177,6 +180,7 @@
 				7069611E29B8D08300BB0C25 /* Theme.swift in Sources */,
 				70B4C65A2A31E82100DA265D /* ThemeChooserView.swift in Sources */,
 				70B4C65C2A33501700DA265D /* ThemeEditorView.swift in Sources */,
+				70B4C65E2A35F40900DA265D /* MyExtensions.swift in Sources */,
 				7002D5B029A3E2BD00891836 /* MemorizeApp.swift in Sources */,
 				7069611629B10C3300BB0C25 /* EmojiMemoryGame.swift in Sources */,
 			);

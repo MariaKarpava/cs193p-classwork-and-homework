@@ -28,24 +28,11 @@ class EmojiMemoryGame: ObservableObject {
         theme.name
     }
     
+    
     var themeColour: Color {
-        switch theme.colour {
-        case "green":
-            return .green
-        case "red":
-            return .red
-        case "blue":
-            return .blue
-        case "yellow":
-            return .yellow
-        case "brown":
-            return .brown
-        case "orange":
-            return .orange
-        default:
-            return .red
-        }
+        theme.uiColour
     }
+    
     
     var score: Int {
         model.score
@@ -90,3 +77,4 @@ struct Previews_EmojiMemoryGame_Previews: PreviewProvider {
         /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
     }
 }
+

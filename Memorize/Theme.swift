@@ -13,6 +13,9 @@ struct Theme: Identifiable, Hashable {
     var emojis: Array<String>
     var numberOfPairsOfCardsToShow: Int
     let id: Int
+
+    
+
     
     
     init(name: String, colour: String, emojis: Array<String>, numberOfPairsOfCardsToShow: Int, id: Int) {
