@@ -9,8 +9,9 @@ import SwiftUI
 
 struct ThemeChooserView: View {
     @EnvironmentObject var store: ThemeStore
-    
     @State private var editMode: EditMode = .inactive
+    @State private var editing = false
+    @State private var selectedTheme: Theme?
 
     
     private var addNewThemeButton: some View {
@@ -40,10 +41,13 @@ struct ThemeChooserView: View {
 //    }
 //
     
-    var tap: some Gesture {
-        TapGesture().onEnded { }
+    func makeTapGesture(selectedTheme: Theme) -> some Gesture {
+        TapGesture().onEnded {
+            self.selectedTheme = selectedTheme
+        }
     }
     
+
     
     var body: some View {
         VStack { // TODO: do we need this stack?
@@ -56,9 +60,10 @@ struct ThemeChooserView: View {
                                 
                                 Text(theme.name).foregroundColor(color)
                                 Text(theme.emojis.joined())
+                                
                             }
                             .lineLimit(1)
-                            .gesture(editMode == .active ? tap : nil)
+                            .gesture(editMode == .active ? makeTapGesture(selectedTheme: theme) : nil)
                         }
                     }
                     //teach the ForEach how to delete items
@@ -79,6 +84,10 @@ struct ThemeChooserView: View {
                     EditButton()
                 }
                 .environment(\.editMode, $editMode)
+                .sheet(item: $selectedTheme) { theme in
+                    let indexOfSelectedTheme = store.themes.firstIndex(where: { $0.id == theme.id })
+                    ThemeEditor(theme: $store.themes[indexOfSelectedTheme!])
+                }
             }
         }
         
