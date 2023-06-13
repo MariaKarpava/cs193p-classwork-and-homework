@@ -15,6 +15,7 @@ struct ThemeEditor: View {
         Form {
             nameSection
 //            addEmojisSection
+             cardPairSection
         }
     }
                     
@@ -23,6 +24,42 @@ struct ThemeEditor: View {
             TextField("Name", text: $theme.name)
         }
     }
+    
+    
+    
+//    struct StepperView: View {
+//        @State private var value = 0
+//        let step = 5
+//        let range = 1...50
+//
+//
+//        var body: some View {
+//            Stepper(value: $value,
+//                    in: range,
+//                    step: step) {
+//                Text("Current: \(value) in \(range.description) " +
+//                     "stepping by \(step)")
+//            }
+//                .padding(10)
+//        }
+//    }
+   
+    
+    var cardPairSection: some View {
+        let range = 2...$theme.emojis.count-1
+        let step = 1
+        
+        return Section(header: Text("Card Count")) {
+            Stepper(value: $theme.numberOfPairsOfCardsToShow,
+                    in: range,
+                    step: step) {
+                Text("\(theme.numberOfPairsOfCardsToShow) Pairs")
+            }
+        }
+    }
+    
+    
+    
     
     @State private var emojisToAdd: [String] = []
     
@@ -52,3 +89,4 @@ struct ThemeEditor_Previews: PreviewProvider {
 
     }
 }
+
