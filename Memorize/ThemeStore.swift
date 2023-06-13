@@ -10,14 +10,7 @@ import SwiftUI
 
 
 class ThemeStore: ObservableObject {
-//    @Published var themes = [Theme]()
-    
-    
-    
     @Published var themes: Array<Theme> = [
-//        Theme(name: "Animals", colour: "green", emojis: ["🐶", "🐭", "🦊", "🐻", "🐼", "🐸", "🐵", "🐥", "🦄", "🐰", "🐷", "🐴", "🦉", "🐱", "🐹", "🐻‍❄️", "🐨", "🐤", "🦁", "🐒", "🦋", "🐺"]),
-//        Theme(name: "Vehicles", colour: "red", emojis: ["✈️", "🚁", "🚘", "🚃", "🚇"]),
-        
         Theme(
             name: "House",
             colour: Theme.RGBAColor(color: UIColor.green),
