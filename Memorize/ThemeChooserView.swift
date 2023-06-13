@@ -12,7 +12,7 @@ struct ThemeChooserView: View {
     @State private var editMode: EditMode = .inactive
     @State private var editing = false
     @State private var selectedTheme: Theme?
-    @State private var games = [Int: EmojiMemoryGame]()
+    @State private var games = [Int: (EmojiMemoryGame, Theme)]()
 
     
     private var addNewThemeButton: some View {
@@ -48,25 +48,25 @@ struct ThemeChooserView: View {
         }
     }
     
-//    private func getDestination(for theme: Theme) -> some View{
-//            if games[theme] == nil {
-//                let newGame = EmojiMemoryGame(theme: theme)
-//                games.updateValue(newGame, forKey: theme)
-//                return EmojiMemoryGameView(game: newGame)
-//            }
-//            return EmojiMemoryGameView(game: games[theme]!)
-//    }
-    
     
     // Need this because if you click Edit, new EmojiMemoryGame() is created and all the progress of the game is lost.
     private func destinationForChosenTheme(_ theme: Theme) -> some View {
+        let newGame = EmojiMemoryGame(theme: theme)
+        // Need originalTheme because newGame shuffles every time it is created.
+        let originalTheme = theme
+
+        
         if games[theme.id] == nil {
-            let newGame = EmojiMemoryGame(theme: theme)
-            games.updateValue(newGame, forKey: theme.id)
+            games[theme.id] = (newGame, originalTheme)
+            
             return ContentView(viewModel: newGame)
         }
+
+        if originalTheme != games[theme.id]?.1 {
+            games[theme.id] = (newGame, originalTheme)
+        }
         
-        return ContentView(viewModel: games[theme.id]!)
+        return ContentView(viewModel: games[theme.id]!.0)
     }
     
     

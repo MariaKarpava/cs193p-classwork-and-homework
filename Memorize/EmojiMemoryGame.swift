@@ -8,7 +8,7 @@ import SwiftUI
 
 
 class EmojiMemoryGame: ObservableObject {
-    // private
+    
     var theme: Theme
     @EnvironmentObject var store: ThemeStore
     
