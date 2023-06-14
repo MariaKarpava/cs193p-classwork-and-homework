@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct ThemeEditor: View {
     @Binding var theme: Theme
     
@@ -15,7 +16,8 @@ struct ThemeEditor: View {
         Form {
             nameSection
 //            addEmojisSection
-             cardPairSection
+            cardPairSection
+            colorPicker
         }
     }
                     
@@ -25,25 +27,6 @@ struct ThemeEditor: View {
         }
     }
     
-    
-    
-//    struct StepperView: View {
-//        @State private var value = 0
-//        let step = 5
-//        let range = 1...50
-//
-//
-//        var body: some View {
-//            Stepper(value: $value,
-//                    in: range,
-//                    step: step) {
-//                Text("Current: \(value) in \(range.description) " +
-//                     "stepping by \(step)")
-//            }
-//                .padding(10)
-//        }
-//    }
-   
     
     var cardPairSection: some View {
         let range = 2...$theme.emojis.count-1
@@ -57,6 +40,23 @@ struct ThemeEditor: View {
             }
         }
     }
+    
+   
+    @State private var selectedColor = Color.red
+        
+    var colorPicker: some View {
+        return Section(header: Text("Theme Color")) {
+            ColorPicker(selection: $selectedColor, supportsOpacity: false) {
+                Text("Select a color")
+            }
+            Rectangle()
+                .fill(selectedColor)
+                .frame(width: 30, height: 40)
+                .cornerRadius(5)
+        }
+    }
+    
+    
     
     
     

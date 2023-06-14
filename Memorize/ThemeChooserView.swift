@@ -52,20 +52,15 @@ struct ThemeChooserView: View {
     // Need this because if you click Edit, new EmojiMemoryGame() is created and all the progress of the game is lost.
     private func destinationForChosenTheme(_ theme: Theme) -> some View {
         let newGame = EmojiMemoryGame(theme: theme)
-        // Need originalTheme because newGame shuffles every time it is created.
+        // Need the originalTheme because newGame is shuffled every time when it is created.
         let originalTheme = theme
-
-        
         if games[theme.id] == nil {
             games[theme.id] = (newGame, originalTheme)
-            
             return ContentView(viewModel: newGame)
         }
-
         if originalTheme != games[theme.id]?.1 {
             games[theme.id] = (newGame, originalTheme)
         }
-        
         return ContentView(viewModel: games[theme.id]!.0)
     }
     
@@ -78,6 +73,7 @@ struct ThemeChooserView: View {
                     ForEach(store.themes) { theme in
                         NavigationLink(destination: destinationForChosenTheme(theme)) {
                             VStack(alignment: .leading) {
+//                                let color = Color(rgbaColor: theme.colour)
                                 let color = Color(rgbaColor: theme.colour)
                                 
                                 Text(theme.name).foregroundColor(color)
