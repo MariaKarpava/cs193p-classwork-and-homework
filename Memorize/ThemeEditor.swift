@@ -41,8 +41,14 @@ struct ThemeEditor: View {
         }
     }
     
-   
-    @State private var selectedColor = Color.red
+    init(theme: Binding<Theme>) {
+        _theme = theme
+        // theme.wrappedValue is used to access the underlying value of the theme binding.
+        _selectedColor = State(initialValue: Color(rgbaColor: theme.wrappedValue.colour))
+    }
+    
+    
+    @State private var selectedColor: Color
         
     var colorPicker: some View {
         return Section(header: Text("Theme Color")) {
@@ -53,11 +59,11 @@ struct ThemeEditor: View {
                 .fill(selectedColor)
                 .frame(width: 30, height: 40)
                 .cornerRadius(5)
-        }
+            }
+            .onChange(of: selectedColor) { newColor in
+                theme.colour = Theme.RGBAColor(color: newColor)
+            }
     }
-    
-    
-    
     
     
     
@@ -82,11 +88,11 @@ struct ThemeEditor: View {
 
 
 
-struct ThemeEditor_Previews: PreviewProvider {
-    static var previews: some View {
-        ThemeEditor(theme: .constant(ThemeStore().themes[0]))
-            .previewLayout(.fixed(width: 300, height: 300))
-
-    }
-}
+//struct ThemeEditor_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ThemeEditor(theme: .constant(ThemeStore().themes[0]))
+//            .previewLayout(.fixed(width: 300, height: 300))
+//
+//    }
+//}
 
