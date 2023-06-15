@@ -15,7 +15,7 @@ struct ThemeEditor: View {
     var body: some View {
         Form {
             nameSection
-//            addEmojisSection
+            addEmojisSection
             cardPairSection
             colorPicker
         }
@@ -41,12 +41,15 @@ struct ThemeEditor: View {
         }
     }
     
+    
+    // need this init to set the correct theme color in edit mode when launching the app.
     init(theme: Binding<Theme>) {
         _theme = theme
-        // theme.wrappedValue is used to access the underlying value of the theme binding.
+        // theme.wrappedValue is used to access the underlying value of the theme binding, which is of type Theme.RGBAColor
+        // Then, the extracted value is passed to the Color init to create the initial value for the selectedColor state property.
         _selectedColor = State(initialValue: Color(rgbaColor: theme.wrappedValue.colour))
+        _emojisInTheme = State(initialValue: theme.wrappedValue.emojis)
     }
-    
     
     @State private var selectedColor: Color
         
@@ -66,33 +69,48 @@ struct ThemeEditor: View {
     }
     
     
+    @State private var emojisInTheme: [String]
+    @State private var emojisToAdd = ""
     
-    @State private var emojisToAdd: [String] = []
-    
-//    var addEmojisSection: some View {
-//        Section(header: Text("Add Emojis")) {
-//            TextField("", text: $emojisToAdd)
-//                .onChange(of: emojisToAdd) { emojis in
-//                    addEmojis(emojis)
-//                }
-//        }
-//    }
-    
-    func addEmojis(_ emojis: [String]) {
-        for emoji in emojis {
-            theme.emojis.append(emoji)
+    var addEmojisSection: some View {
+        Section(header: Text("Add Emojis")) {
+            TextField("Emoji", text: $emojisToAdd)
+                .onChange(of: emojisToAdd) { emojis in
+                    addEmojis(emojis)
+                }
         }
+    }
+    
+    // TODO: Problems
+    //  1. parses 2 added emojis as 1
+    //  2. when add not emoji with emojis (like  🍏🍐Masha) -> filters Masha and returns 🍏🍐 but on one card
+    //  3. when add Masha - adds empty card
+    //  4. when add "🍏", "🍐" - adds empty card
+    //  5. when add emojis - pair count should be allowed to increase
+    //  6. When I try to add sth and press + on the number of cards to show - it is decremented by 1.
+    
+    
+    func addEmojis(_ emojis: String) {
+        // add emojis to theme.emojis
+        // convert string to array of strings
+        print("emojis: \(emojis)")
+        
+        let arrOfEmojisToAdd = emojis.emojiArray //.map { String($0) }
+//        let stringArray = characterArray.map { String($0) }
+        print("arrOfEmojisToAdd: \(arrOfEmojisToAdd)")
+        
+        
+        var updatedThemeEmojis = emojisInTheme + arrOfEmojisToAdd
+        updatedThemeEmojis = updatedThemeEmojis.removingDuplicateStrings
+        
+        theme.emojis = updatedThemeEmojis
+        
+        print("theme.emojis: \(theme.emojis)")
         
     }
+    
+    
 }
 
 
-
-//struct ThemeEditor_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ThemeEditor(theme: .constant(ThemeStore().themes[0]))
-//            .previewLayout(.fixed(width: 300, height: 300))
-//
-//    }
-//}
 

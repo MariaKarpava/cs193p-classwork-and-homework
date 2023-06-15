@@ -34,7 +34,7 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     init(theme: Theme) {
-        print("EmojiMemoryGame() creation")
+        // print("EmojiMemoryGame() creation")
         self.theme = theme
         self.theme.emojis.shuffle()
         model = EmojiMemoryGame.createMemoryGame(theme: self.theme)

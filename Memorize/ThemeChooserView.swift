@@ -80,7 +80,7 @@ struct ThemeChooserView: View {
                                 Text(theme.emojis.joined())
                                 
                             }
-                            .lineLimit(1)
+//                            .lineLimit(1)
                             .gesture(editMode == .active ? makeTapGesture(selectedTheme: theme) : nil)
                         }
                     }

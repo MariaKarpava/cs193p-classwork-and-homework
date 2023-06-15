@@ -111,13 +111,13 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard {
                 // = 2nd step
                 let endTime = Date()
-                print("endTime: \(endTime) sec")
+                // print("endTime: \(endTime) sec")
                 
                 let timeInterval = endTime.timeIntervalSince(startTime!)
-                print("time elapsed = \(timeInterval)")
+                // print("time elapsed = \(timeInterval)")
                 
                 correctedPoints = Int(max(10 - (timeInterval), 1))
-                print(correctedPoints)
+                // print(correctedPoints)
                 // if card2 == card1
                 if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                     cards[chosenIndex].isMatched = true
@@ -143,7 +143,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                 }
                 indexOfTheOneAndOnlyFaceUpCard = chosenIndex
                 startTime = Date()
-                print("startTime: \(startTime!)")
+                // print("startTime: \(startTime!)")
             }
              cards[chosenIndex].isFaceUp.toggle()
         }
