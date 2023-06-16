@@ -93,21 +93,6 @@ extension String {
 }
 
 
-//extension Array where Element == Character {
-//    var removingDuplicateCharacters: [Character] {
-//        var uniqueElements: [Character] = []
-//
-//        for element in self {
-//            if !uniqueElements.contains(element) {
-//                uniqueElements.append(element)
-//            }
-//        }
-//
-//        return uniqueElements
-//    }
-//}
-
-
 
 extension Array where Element == String {
     var removingDuplicateStrings: [String] {
@@ -120,7 +105,6 @@ extension Array where Element == String {
                 seenElements.insert(element)
             }
         }
-        
         return uniqueElements
     }
 }

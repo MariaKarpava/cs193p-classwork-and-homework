@@ -16,6 +16,7 @@ struct ThemeEditor: View {
         Form {
             nameSection
             addEmojisSection
+            removeEmojisSection
             cardPairSection
             colorPicker
         }
@@ -27,11 +28,12 @@ struct ThemeEditor: View {
         }
     }
     
+   
     
     var cardPairSection: some View {
-        let range = 2...$theme.emojis.count-1
+        let range = 2...$theme.emojis.count
         let step = 1
-        
+
         return Section(header: Text("Card Count")) {
             Stepper(value: $theme.numberOfPairsOfCardsToShow,
                     in: range,
@@ -40,6 +42,8 @@ struct ThemeEditor: View {
             }
         }
     }
+    
+
     
     
     // need this init to set the correct theme color in edit mode when launching the app.
@@ -81,35 +85,106 @@ struct ThemeEditor: View {
         }
     }
     
-    // TODO: Problems
-    //  1. parses 2 added emojis as 1
-    //  2. when add not emoji with emojis (like  🍏🍐Masha) -> filters Masha and returns 🍏🍐 but on one card
-    //  3. when add Masha - adds empty card
-    //  4. when add "🍏", "🍐" - adds empty card
-    //  5. when add emojis - pair count should be allowed to increase
-    //  6. When I try to add sth and press + on the number of cards to show - it is decremented by 1.
-    
-    
+    // TODO: Fix numberOfPairsOfCardsToShow
     func addEmojis(_ emojis: String) {
         // add emojis to theme.emojis
         // convert string to array of strings
-        print("emojis: \(emojis)")
+//        print("emojis: \(emojis)")
         
         let arrOfEmojisToAdd = emojis.emojiArray //.map { String($0) }
 //        let stringArray = characterArray.map { String($0) }
-        print("arrOfEmojisToAdd: \(arrOfEmojisToAdd)")
+//        print("arrOfEmojisToAdd: \(arrOfEmojisToAdd)")
+        
         
         
         var updatedThemeEmojis = emojisInTheme + arrOfEmojisToAdd
         updatedThemeEmojis = updatedThemeEmojis.removingDuplicateStrings
         
+        // Does not help with all problems
+        let numberOfEmojisInTheme = updatedThemeEmojis.count
+        theme.numberOfPairsOfCardsToShow = numberOfEmojisInTheme
         theme.emojis = updatedThemeEmojis
         
-        print("theme.emojis: \(theme.emojis)")
+//        print("theme.emojis: \(theme.emojis)")
         
     }
     
+    // 🍏🍐🍊
+    var removeEmojisSection: some View {
+        Section(header: Text("Remove Emojis: tap to remove.")) {
+            let emojis = theme.emojis
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))]) {
+                ForEach(emojis, id: \.self) { emoji in
+                    Text(emoji)
+                        .onTapGesture {
+                            withAnimation {
+                                theme.emojis.removeAll { $0 == emoji }
+                                theme.numberOfPairsOfCardsToShow = min(theme.numberOfPairsOfCardsToShow, theme.emojis.count)
+                            }
+                        }
+                }
+            }
+            .font(.system(size: 40))
+        }
+    }
     
+
+    // also works
+//    var removeEmojisSection: some View {
+//        Section(header: Text("Remove Emojis: tap to remove.")) {
+//            let emojis = theme.emojis
+//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))]) {
+//                ForEach(emojis, id: \.self) { emoji in
+//                    Text(emoji)
+//                        .onTapGesture {
+//                            withAnimation {
+//                                theme.emojis.removeAll { character -> Bool in
+//                                    return String(character) == emoji
+//                                }
+//                                theme.numberOfPairsOfCardsToShow = theme.emojis.count
+//                            }
+//                        }
+//                }
+//            }
+//            .font(.system(size: 40))
+//        }
+//    }
+
+    
+    
+    
+    
+    
+/*
+ doesn't work - The reason why the updated removeEmojisSection code you provided doesn't work is that you are modifying the theme object within the closure passed to removeAll. SwiftUI relies on property bindings and change tracking to update the UI properly, and modifying the theme object directly within the closure can cause unexpected behavior or crashes.
+    
+    The closure you pass to removeAll is not executed in the context of SwiftUI's view update cycle, so modifying the theme object directly can lead to inconsistencies.
+
+    To ensure proper view updates, it's recommended to modify the theme object outside the closure, after the removeAll operation is complete. Here's an updated version of the removeEmojisSection that works correctly:
+ */
+//    var removeEmojisSection: some View {
+//        Section(header: Text("Remove Emojis: tap to remove.")) {
+//            let emojis = theme.emojis
+//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))]) {
+//                ForEach(emojis, id: \.self) { emoji in
+//                    Text(emoji)
+//                        .onTapGesture {
+//                            withAnimation {
+//                                theme.emojis.removeAll { character -> Bool in
+//                                    if String(character) == emoji {
+//                                        theme.numberOfPairsOfCardsToShow -= 1
+//                                        return true
+//                                    }
+//                                    return false
+//                                }
+//                            }
+//                        }
+//                }
+//            }
+//            .font(.system(size: 40))
+//        }
+//    }
+
 }
 
 
