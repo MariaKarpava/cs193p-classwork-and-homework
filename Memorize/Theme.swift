@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Theme: Identifiable, Hashable {
+struct Theme: Identifiable, Hashable, Codable {
     var name: String
     var colour: RGBAColor
     var emojis: Array<String>

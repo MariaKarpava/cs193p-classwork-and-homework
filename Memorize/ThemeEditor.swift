@@ -10,8 +10,9 @@ import SwiftUI
 
 struct ThemeEditor: View {
     @Binding var theme: Theme
+    @EnvironmentObject var store: ThemeStore
     
-    // I'm binding the text that's being edited to the name field in this @State (above).
+
     var body: some View {
         Form {
             nameSection
@@ -19,6 +20,10 @@ struct ThemeEditor: View {
             removeEmojisSection
             cardPairSection
             colorPicker
+        }.onChange(of: theme) { _ in
+            store.saveData()
+        }.onAppear {
+//            store.readData() // Not needed, as we already call readData during ThemeStore init.
         }
     }
                     
@@ -53,6 +58,8 @@ struct ThemeEditor: View {
         // Then, the extracted value is passed to the Color init to create the initial value for the selectedColor state property.
         _selectedColor = State(initialValue: Color(rgbaColor: theme.wrappedValue.colour))
         _emojisInTheme = State(initialValue: theme.wrappedValue.emojis)
+        
+//        store.readData()
     }
     
     @State private var selectedColor: Color

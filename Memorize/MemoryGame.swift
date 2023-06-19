@@ -167,7 +167,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         var id: Int
     }
     
-    private struct Choice {
+    private struct Choice: Codable {
         let index: Int
         let time: Date
         
@@ -176,4 +176,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             self.time = time
         }
     }
+    
+    
+
 }

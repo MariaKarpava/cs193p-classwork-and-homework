@@ -40,9 +40,13 @@ class EmojiMemoryGame: ObservableObject {
         model = EmojiMemoryGame.createMemoryGame(theme: self.theme)
     }
     
+    
+    
     static func createMemoryGame(theme: Theme) -> MemoryGame<String> {
-        MemoryGame<String>(numberOfPairsOfCards: theme.numberOfPairsOfCardsToShow, createCardContent: { pairIndex in
-            theme.emojis[pairIndex]
+        return MemoryGame<String>(numberOfPairsOfCards: theme.numberOfPairsOfCardsToShow, createCardContent: { pairIndex in
+//             print(theme.emojis[pairIndex])
+            return theme.emojis[pairIndex]
+            
         })
     }
     
@@ -62,9 +66,9 @@ class EmojiMemoryGame: ObservableObject {
 
 
 
-struct Previews_EmojiMemoryGame_Previews: PreviewProvider {
-    static var previews: some View {
-        /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
-    }
-}
+//struct Previews_EmojiMemoryGame_Previews: PreviewProvider {
+//    static var previews: some View {
+//        /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
+//    }
+//}
 

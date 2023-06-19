@@ -23,24 +23,7 @@ struct ThemeChooserView: View {
             }
     }
     
-//    private func getDestination(for theme: Theme) -> some View{
-//            if games[theme] == nil {
-//                let newGame = EmojiMemoryGame(theme: theme)
-//                games.updateValue(newGame, forKey: theme)
-//                return EmojiMemoryGameView(game: newGame)
-//            }
-//            return EmojiMemoryGameView(game: games[theme]!)
-//    }
-    
-    
-//    private func destinationForChosenTheme() -> some View {
-//
-//
-//
-//
-//        return ContentView(viewModel: <#T##EmojiMemoryGame#>)
-//    }
-//
+
     
     func makeTapGesture(selectedTheme: Theme) -> some Gesture {
         TapGesture().onEnded {
@@ -105,6 +88,7 @@ struct ThemeChooserView: View {
                 .sheet(item: $selectedTheme) { theme in
                     let indexOfSelectedTheme = store.themes.firstIndex(where: { $0.id == theme.id })
                     ThemeEditor(theme: $store.themes[indexOfSelectedTheme!])
+                        
                 }
             }
         }
@@ -112,11 +96,11 @@ struct ThemeChooserView: View {
     }
 }
 
-struct ThemeChooserView_Previews: PreviewProvider {
-    static var previews: some View {
-        ThemeChooserView()
-    }
-}
+//struct ThemeChooserView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ThemeChooserView()
+//    }
+//}
 
 
 
