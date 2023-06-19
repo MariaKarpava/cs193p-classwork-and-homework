@@ -12,12 +12,12 @@ struct ThemeChooserView: View {
     @State private var editMode: EditMode = .inactive
     @State private var editing = false
     @State private var selectedTheme: Theme?
-    @State private var games = [Int: (EmojiMemoryGame, Theme)]()
+    @State private var games = [UUID: (EmojiMemoryGame, Theme)]()
 
     
     private var addNewThemeButton: some View {
             Button {
-            
+                selectedTheme = store.newTheme
             } label : {
                 Image(systemName: "plus")
             }
@@ -48,6 +48,7 @@ struct ThemeChooserView: View {
     }
     
     
+
     
     var body: some View {
         VStack { // TODO: do we need this stack?
@@ -56,14 +57,11 @@ struct ThemeChooserView: View {
                     ForEach(store.themes) { theme in
                         NavigationLink(destination: destinationForChosenTheme(theme)) {
                             VStack(alignment: .leading) {
-//                                let color = Color(rgbaColor: theme.colour)
                                 let color = Color(rgbaColor: theme.colour)
-                                
                                 Text(theme.name).foregroundColor(color)
                                 Text(theme.emojis.joined())
-                                
                             }
-//                            .lineLimit(1)
+                            .lineLimit(1)
                             .gesture(editMode == .active ? makeTapGesture(selectedTheme: theme) : nil)
                         }
                     }
@@ -86,15 +84,20 @@ struct ThemeChooserView: View {
                 }
                 .environment(\.editMode, $editMode)
                 .sheet(item: $selectedTheme) { theme in
-                    let indexOfSelectedTheme = store.themes.firstIndex(where: { $0.id == theme.id })
-                    ThemeEditor(theme: $store.themes[indexOfSelectedTheme!])
-                        
+                    if theme == store.newTheme {
+                        ThemeEditor(theme: $store.newTheme)
+                    } else {
+                        let indexOfSelectedTheme = store.themes.firstIndex(where: { $0.id == theme.id })
+                        ThemeEditor(theme: $store.themes[indexOfSelectedTheme!])
+                    }
                 }
             }
         }
         
     }
 }
+
+
 
 //struct ThemeChooserView_Previews: PreviewProvider {
 //    static var previews: some View {

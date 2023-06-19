@@ -12,7 +12,7 @@ struct Theme: Identifiable, Hashable, Codable {
     var colour: RGBAColor
     var emojis: Array<String>
     var numberOfPairsOfCardsToShow: Int
-    let id: Int
+    var id = UUID()
 
     
 
@@ -24,21 +24,11 @@ struct Theme: Identifiable, Hashable, Codable {
     }
     
     
-    init(name: String, colour: RGBAColor, emojis: Array<String>, numberOfPairsOfCardsToShow: Int, id: Int) {
+    init(name: String, colour: RGBAColor, emojis: Array<String>, numberOfPairsOfCardsToShow: Int) {
         self.name = name
         self.colour = colour
         self.emojis = emojis
         self.numberOfPairsOfCardsToShow = numberOfPairsOfCardsToShow > emojis.count ? emojis.count : numberOfPairsOfCardsToShow
-        self.id = id
     }
-    
-//    init(name: String, colour: String, emojis: Array<String>) {
-//        self.name = name
-//        self.colour = colour
-//        self.emojis = emojis
-//        // self.numberOfPairsOfCardsToShow = emojis.count
-//        self.numberOfPairsOfCardsToShow = Int.random(in: 3...emojis.count)
-//    }
-    
     
 }

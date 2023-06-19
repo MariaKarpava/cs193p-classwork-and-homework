@@ -44,7 +44,6 @@ class EmojiMemoryGame: ObservableObject {
     
     static func createMemoryGame(theme: Theme) -> MemoryGame<String> {
         return MemoryGame<String>(numberOfPairsOfCards: theme.numberOfPairsOfCardsToShow, createCardContent: { pairIndex in
-//             print(theme.emojis[pairIndex])
             return theme.emojis[pairIndex]
             
         })

@@ -11,39 +11,43 @@ import SwiftUI
 
 class ThemeStore: ObservableObject {
     
+    var newTheme = Theme(
+        name: "",
+        colour: Theme.RGBAColor(color: UIColor.red),
+        emojis: [],
+        numberOfPairsOfCardsToShow: 0
+    )
+    
+    
+    
     // @Published: any changes to this property will automatically trigger an update to the subscribed views.
     @Published var themes: Array<Theme> = [
         Theme(
             name: "House",
             colour: Theme.RGBAColor(color: UIColor.green),
             emojis: ["🛁", "🛏️", "🔑", "🪑", "🧸", "🖼️", "🪞", "🚽", "🛋️"],
-            numberOfPairsOfCardsToShow: 9,
-            id: 3
+            numberOfPairsOfCardsToShow: 9
             
         ),
         Theme(
             name: "Body",
             colour: Theme.RGBAColor(color: UIColor.yellow),
             emojis: ["🦶🏻", "🦵", "🦷", "👅", "👄", "👂", "👃", "👁️", "🫀"],
-            numberOfPairsOfCardsToShow: 9,
-            id: 4
+            numberOfPairsOfCardsToShow: 9
             
         ),
         Theme(
             name: "Clothes",
             colour: Theme.RGBAColor(color: UIColor.blue),
             emojis: ["👕", "👖", "👗", "🩱", "👘", "👠", "🥾", "👒", "👙"],
-            numberOfPairsOfCardsToShow: 9,
-            id: 5
+            numberOfPairsOfCardsToShow: 9
             
         ),
         Theme(
             name: "Fruits",
             colour: Theme.RGBAColor(color: UIColor.orange),
             emojis: ["🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐"],
-            numberOfPairsOfCardsToShow: 9,
-            id: 6
-            
+            numberOfPairsOfCardsToShow: 9
         )
     ]
     

@@ -12,19 +12,63 @@ struct ThemeEditor: View {
     @Binding var theme: Theme
     @EnvironmentObject var store: ThemeStore
     
-
-    var body: some View {
-        Form {
-            nameSection
-            addEmojisSection
-            removeEmojisSection
-            cardPairSection
-            colorPicker
-        }.onChange(of: theme) { _ in
-            store.saveData()
-        }.onAppear {
-//            store.readData() // Not needed, as we already call readData during ThemeStore init.
+    
+    @State private var addingNewThemeMode = false
+    
+    private var saveButton: some View {
+            Button {
+                if themeIsNew && theme.emojis.count >= 2 {
+                    store.themes.append(theme)
+                    store.saveData()
+//                    print("1:")
+//                    print(theme)
+//                    print("2:")
+//                    print(store.themes)
+                    
+                } else if themeIsNew && theme.emojis.count < 2 {
+                    return
+                } else {
+                    store.saveData()
+                }
+                
+            } label : {
+                Text("Save")
+            }
+    }
+    
+//    var permanentTheme: Theme {
+//        return theme == store.newTheme ? store.newTheme : theme
+//    }
+    
+    var themeIsNew: Bool {
+        for t in store.themes {
+            if t == theme {
+                return false
+            }
         }
+        return true
+    }
+    
+    
+    
+    
+    
+    var body: some View {
+        VStack{
+            Form {
+                nameSection
+                addEmojisSection
+                removeEmojisSection
+                cardPairSection
+                colorPicker
+            }.onChange(of: theme) { _ in
+                store.saveData()
+            }
+            
+            saveButton
+                .buttonStyle(.bordered)
+        }
+        
     }
                     
     var nameSection: some View {
@@ -36,7 +80,8 @@ struct ThemeEditor: View {
    
     
     var cardPairSection: some View {
-        let range = 2...$theme.emojis.count
+//        let range = 0...$theme.emojis.count
+        let range = theme == store.newTheme ? 0...$theme.emojis.count : 2...$theme.emojis.count
         let step = 1
 
         return Section(header: Text("Card Count")) {
@@ -58,8 +103,6 @@ struct ThemeEditor: View {
         // Then, the extracted value is passed to the Color init to create the initial value for the selectedColor state property.
         _selectedColor = State(initialValue: Color(rgbaColor: theme.wrappedValue.colour))
         _emojisInTheme = State(initialValue: theme.wrappedValue.emojis)
-        
-//        store.readData()
     }
     
     @State private var selectedColor: Color
@@ -94,15 +137,7 @@ struct ThemeEditor: View {
     
     // TODO: Fix numberOfPairsOfCardsToShow
     func addEmojis(_ emojis: String) {
-        // add emojis to theme.emojis
-        // convert string to array of strings
-//        print("emojis: \(emojis)")
-        
-        let arrOfEmojisToAdd = emojis.emojiArray //.map { String($0) }
-//        let stringArray = characterArray.map { String($0) }
-//        print("arrOfEmojisToAdd: \(arrOfEmojisToAdd)")
-        
-        
+        let arrOfEmojisToAdd = emojis.emojiArray
         
         var updatedThemeEmojis = emojisInTheme + arrOfEmojisToAdd
         updatedThemeEmojis = updatedThemeEmojis.removingDuplicateStrings
@@ -113,7 +148,6 @@ struct ThemeEditor: View {
         theme.emojis = updatedThemeEmojis
         
 //        print("theme.emojis: \(theme.emojis)")
-        
     }
     
     // 🍏🍐🍊
@@ -135,63 +169,8 @@ struct ThemeEditor: View {
         }
     }
     
-
-    // also works
-//    var removeEmojisSection: some View {
-//        Section(header: Text("Remove Emojis: tap to remove.")) {
-//            let emojis = theme.emojis
-//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))]) {
-//                ForEach(emojis, id: \.self) { emoji in
-//                    Text(emoji)
-//                        .onTapGesture {
-//                            withAnimation {
-//                                theme.emojis.removeAll { character -> Bool in
-//                                    return String(character) == emoji
-//                                }
-//                                theme.numberOfPairsOfCardsToShow = theme.emojis.count
-//                            }
-//                        }
-//                }
-//            }
-//            .font(.system(size: 40))
-//        }
-//    }
-
     
     
-    
-    
-    
-/*
- doesn't work - The reason why the updated removeEmojisSection code you provided doesn't work is that you are modifying the theme object within the closure passed to removeAll. SwiftUI relies on property bindings and change tracking to update the UI properly, and modifying the theme object directly within the closure can cause unexpected behavior or crashes.
-    
-    The closure you pass to removeAll is not executed in the context of SwiftUI's view update cycle, so modifying the theme object directly can lead to inconsistencies.
-
-    To ensure proper view updates, it's recommended to modify the theme object outside the closure, after the removeAll operation is complete. Here's an updated version of the removeEmojisSection that works correctly:
- */
-//    var removeEmojisSection: some View {
-//        Section(header: Text("Remove Emojis: tap to remove.")) {
-//            let emojis = theme.emojis
-//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))]) {
-//                ForEach(emojis, id: \.self) { emoji in
-//                    Text(emoji)
-//                        .onTapGesture {
-//                            withAnimation {
-//                                theme.emojis.removeAll { character -> Bool in
-//                                    if String(character) == emoji {
-//                                        theme.numberOfPairsOfCardsToShow -= 1
-//                                        return true
-//                                    }
-//                                    return false
-//                                }
-//                            }
-//                        }
-//                }
-//            }
-//            .font(.system(size: 40))
-//        }
-//    }
-
 }
 
 
