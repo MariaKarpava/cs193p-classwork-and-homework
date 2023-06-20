@@ -85,10 +85,10 @@ struct ThemeChooserView: View {
                 .environment(\.editMode, $editMode)
                 .sheet(item: $selectedTheme) { theme in
                     if theme == store.newTheme {
-                        ThemeEditor(theme: $store.newTheme)
+                        ThemeEditor(theme: store.newTheme)
                     } else {
                         let indexOfSelectedTheme = store.themes.firstIndex(where: { $0.id == theme.id })
-                        ThemeEditor(theme: $store.themes[indexOfSelectedTheme!])
+                        ThemeEditor(theme: store.themes[indexOfSelectedTheme!])
                     }
                 }
             }

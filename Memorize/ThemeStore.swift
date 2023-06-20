@@ -10,14 +10,12 @@ import SwiftUI
 
 
 class ThemeStore: ObservableObject {
-    
-    var newTheme = Theme(
+    @Published var newTheme = Theme(
         name: "",
         colour: Theme.RGBAColor(color: UIColor.red),
         emojis: [],
         numberOfPairsOfCardsToShow: 0
     )
-    
     
     
     // @Published: any changes to this property will automatically trigger an update to the subscribed views.
@@ -75,7 +73,6 @@ class ThemeStore: ObservableObject {
         }
     }
     
-    
     func readData() {
         do {
             let jsonData = try Data(contentsOf: fileURL)
@@ -86,9 +83,6 @@ class ThemeStore: ObservableObject {
             print("Error loading data: \(error)")
         }
     }
-
-
-    
 }
 
 

@@ -57,7 +57,6 @@ extension Theme.RGBAColor {
      }
 }
 
-
 // UIColor -> get: red, green, blue, alpha -> RGBAColor
 extension Theme.RGBAColor {
     init(color: UIColor) {
@@ -71,9 +70,6 @@ extension Theme.RGBAColor {
         self.init(red: Double(red), green: Double(green), blue: Double(blue), alpha: Double(alpha))
     }
 }
-
-
-
 
 // some extensions to String and Character
 // to help us with managing our Strings of emojis
@@ -92,8 +88,6 @@ extension String {
     }
 }
 
-
-
 extension Array where Element == String {
     var removingDuplicateStrings: [String] {
         var uniqueElements: [String] = []
@@ -108,8 +102,6 @@ extension Array where Element == String {
         return uniqueElements
     }
 }
-
-
 
 extension Character {
     var isEmoji: Bool {
@@ -130,7 +122,6 @@ extension Character {
         }
     }
 }
-
 
 extension String {
     var emojiArray: [String] {

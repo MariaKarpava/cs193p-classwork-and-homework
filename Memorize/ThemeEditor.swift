@@ -9,48 +9,32 @@ import SwiftUI
 
 
 struct ThemeEditor: View {
-    @Binding var theme: Theme
+    @State var theme: Theme
     @EnvironmentObject var store: ThemeStore
-    
-    
     @State private var addingNewThemeMode = false
     
-    private var saveButton: some View {
-            Button {
-                if themeIsNew && theme.emojis.count >= 2 {
-                    store.themes.append(theme)
-                    store.saveData()
-//                    print("1:")
-//                    print(theme)
-//                    print("2:")
-//                    print(store.themes)
-                    
-                } else if themeIsNew && theme.emojis.count < 2 {
-                    return
-                } else {
-                    store.saveData()
-                }
-                
-            } label : {
-                Text("Save")
-            }
-    }
-    
-//    var permanentTheme: Theme {
-//        return theme == store.newTheme ? store.newTheme : theme
-//    }
     
     var themeIsNew: Bool {
-        for t in store.themes {
-            if t == theme {
-                return false
-            }
-        }
-        return true
+        !store.themes.contains { $0.id == theme.id }
     }
     
-    
-    
+    private var saveButton: some View {
+        Button {
+            if themeIsNew && theme.emojis.count >= 2 {
+                store.themes.append(theme)
+                store.saveData()
+            } else if themeIsNew && theme.emojis.count < 2 {
+                return
+            } else {
+                if let index = store.themes.firstIndex(where: { $0.id == theme.id }) {
+                    store.themes[index] = theme
+                    store.saveData()
+                }
+            }
+        } label : {
+            Text("Save")
+        }
+    }
     
     
     var body: some View {
@@ -64,11 +48,9 @@ struct ThemeEditor: View {
             }.onChange(of: theme) { _ in
                 store.saveData()
             }
-            
             saveButton
                 .buttonStyle(.bordered)
         }
-        
     }
                     
     var nameSection: some View {
@@ -77,11 +59,10 @@ struct ThemeEditor: View {
         }
     }
     
-   
     
     var cardPairSection: some View {
-//        let range = 0...$theme.emojis.count
-        let range = theme == store.newTheme ? 0...$theme.emojis.count : 2...$theme.emojis.count
+        let range = 0...$theme.emojis.count
+//        let range = theme == store.newTheme ? 0...$theme.emojis.count : 2...$theme.emojis.count
         let step = 1
 
         return Section(header: Text("Card Count")) {
@@ -93,16 +74,16 @@ struct ThemeEditor: View {
         }
     }
     
-
     
     
     // need this init to set the correct theme color in edit mode when launching the app.
-    init(theme: Binding<Theme>) {
-        _theme = theme
+    init(theme: Theme) {
+        _theme = State(initialValue: theme)
         // theme.wrappedValue is used to access the underlying value of the theme binding, which is of type Theme.RGBAColor
         // Then, the extracted value is passed to the Color init to create the initial value for the selectedColor state property.
-        _selectedColor = State(initialValue: Color(rgbaColor: theme.wrappedValue.colour))
-        _emojisInTheme = State(initialValue: theme.wrappedValue.emojis)
+        //  _emojisInTheme = State(initialValue: theme.wrappedValue.emojis)
+        
+        _selectedColor = State(initialValue: Color(rgbaColor: theme.colour))
     }
     
     @State private var selectedColor: Color
@@ -123,7 +104,6 @@ struct ThemeEditor: View {
     }
     
     
-    @State private var emojisInTheme: [String]
     @State private var emojisToAdd = ""
     
     var addEmojisSection: some View {
@@ -135,22 +115,17 @@ struct ThemeEditor: View {
         }
     }
     
-    // TODO: Fix numberOfPairsOfCardsToShow
+
     func addEmojis(_ emojis: String) {
         let arrOfEmojisToAdd = emojis.emojiArray
-        
-        var updatedThemeEmojis = emojisInTheme + arrOfEmojisToAdd
+        var updatedThemeEmojis = theme.emojis /*emojisInTheme*/ + arrOfEmojisToAdd
         updatedThemeEmojis = updatedThemeEmojis.removingDuplicateStrings
-        
-        // Does not help with all problems
         let numberOfEmojisInTheme = updatedThemeEmojis.count
         theme.numberOfPairsOfCardsToShow = numberOfEmojisInTheme
         theme.emojis = updatedThemeEmojis
-        
-//        print("theme.emojis: \(theme.emojis)")
     }
     
-    // 🍏🍐🍊
+
     var removeEmojisSection: some View {
         Section(header: Text("Remove Emojis: tap to remove.")) {
             let emojis = theme.emojis
@@ -168,9 +143,6 @@ struct ThemeEditor: View {
             .font(.system(size: 40))
         }
     }
-    
-    
-    
 }
 
 
