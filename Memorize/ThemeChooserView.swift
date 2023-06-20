@@ -68,12 +68,14 @@ struct ThemeChooserView: View {
                     //teach the ForEach how to delete items
                     // at the indices in indexSet from its array
                     .onDelete { indexSet in
-                        
+                        store.themes.remove(atOffsets: indexSet)
+                        store.saveData()
                     }
                     // teach the ForEach how to move items
                     // at the indices in indexSet to a newOffset in its array
                     .onMove { indexSet, newOffset in
-                        
+                        store.themes.move(fromOffsets: indexSet, toOffset: newOffset)
+                        store.saveData()
                     }
                 }
                 .navigationTitle("Memorize") // TODO: should it belong here (to the List) or to the NavigationView?

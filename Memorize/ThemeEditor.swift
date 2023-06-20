@@ -12,7 +12,8 @@ struct ThemeEditor: View {
     @State var theme: Theme
     @EnvironmentObject var store: ThemeStore
     @State private var addingNewThemeMode = false
-    
+    @Environment(\.dismiss) private var dismiss
+
     
     var themeIsNew: Bool {
         !store.themes.contains { $0.id == theme.id }
@@ -23,17 +24,20 @@ struct ThemeEditor: View {
             if themeIsNew && theme.emojis.count >= 2 {
                 store.themes.append(theme)
                 store.saveData()
+                dismiss()
             } else if themeIsNew && theme.emojis.count < 2 {
                 return
             } else {
                 if let index = store.themes.firstIndex(where: { $0.id == theme.id }) {
                     store.themes[index] = theme
                     store.saveData()
+                    dismiss()
                 }
             }
         } label : {
             Text("Save")
         }
+        .disabled(theme.emojis.count < 2 ? true : false )
     }
     
     
